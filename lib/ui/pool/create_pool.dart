@@ -1,5 +1,4 @@
 import 'package:car_pooling/models/nominatim_place.dart';
-import 'package:car_pooling/models/osrm_route.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -142,23 +141,20 @@ class _CreatePoolState extends State<CreatePool> {
         onTap: () async {
           setState(() {
             buildNominatimPlaceList = [];
-            searchCnt.text = nominatimPlace.displayName!;
           });
-          //mapController.drawRoadManually()
-          await drawRoute(nominatimPlace.lat!, nominatimPlace.lon!);
+          searchCnt.text = nominatimPlace.displayName!;
+          await Future.delayed(const Duration(seconds: 3));
+          await mapController.drawRoad(
+              GeoPoint(latitude: startLat, longitude: startLon),
+              GeoPoint(
+                  latitude: double.parse(nominatimPlace.lat!),
+                  longitude: double.parse(nominatimPlace.lon!)),
+              roadOption:
+                  const RoadOption(roadColor: Colors.red, roadWidth: 10));
+          //distance2point(p1, p2)
         },
       ));
     }
     return children;
-  }
-
-  Future drawRoute(String endLat, String endLon) async {
-    try {
-      OSRMRoute osrmRoute = await Provider.of<UserModel>(context, listen: false)
-          .getRoute(startLon.toString(), startLat.toString(), endLon, endLat);
-      print(osrmRoute);
-    } catch (e) {
-      print("Hata: $e");
-    }
   }
 }
