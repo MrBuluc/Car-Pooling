@@ -114,7 +114,12 @@ class _CreatePoolState extends State<CreatePool> {
             await Provider.of<UserModel>(context, listen: false)
                 .getNominatimPlaces(search);
         for (NominatimPlace nominatimPlace in nominatimPlaces) {
-          nominatimPlace.distance(startLat.toString(), startLon.toString());
+          nominatimPlace.d = (await distance2point(
+                  GeoPoint(latitude: startLat, longitude: startLon),
+                  GeoPoint(
+                      latitude: double.parse(nominatimPlace.lat!),
+                      longitude: double.parse(nominatimPlace.lon!)))) /
+              1000;
         }
         setState(() {
           buildNominatimPlaceList = nominatimPlaces;
@@ -151,7 +156,6 @@ class _CreatePoolState extends State<CreatePool> {
                   longitude: double.parse(nominatimPlace.lon!)),
               roadOption:
                   const RoadOption(roadColor: Colors.red, roadWidth: 10));
-          //distance2point(p1, p2)
         },
       ));
     }
