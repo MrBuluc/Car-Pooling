@@ -1,8 +1,8 @@
-import 'dart:math';
-
 import 'package:car_pooling/models/nominatim_place.dart';
+import 'package:car_pooling/models/osrm_route.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
 
 class CreatePool extends StatefulWidget {
@@ -13,22 +13,94 @@ class CreatePool extends StatefulWidget {
 }
 
 class _CreatePoolState extends State<CreatePool> {
-  // hacettepe Teknokent
-  double startLat = 39.863158548653175;
-  double startLon = 32.737793283794964;
+  late double startLat;
+  late double startLon;
+
+  List<NominatimPlace> buildNominatimPlaceList = [];
+
+  late Size size;
+
+  TextEditingController searchCnt = TextEditingController();
+
+  MapController mapController = MapController();
+
+  MarkerIcon userLocationMarker = const MarkerIcon(
+    icon: Icon(
+      Icons.location_on,
+      color: Colors.blue,
+      size: 100,
+    ),
+  );
+
+  @override
+  void dispose() {
+    mapController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Padding(
           padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-          child: Stack(
+          child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(border: const OutlineInputBorder()),
+                controller: searchCnt,
+                decoration: const InputDecoration(border: OutlineInputBorder()),
                 onChanged: getNominatimPlaces,
               ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: size.height * .8,
+                      child: OSMFlutter(
+                        controller: mapController,
+                        trackMyPosition: true,
+                        initZoom: 17,
+                        userLocationMarker: UserLocationMaker(
+                            personMarker: userLocationMarker,
+                            directionArrowMarker: userLocationMarker),
+                        onMapIsReady: (ready) async {
+                          if (ready) {
+                            GeoPoint geoPoint =
+                                await mapController.myLocation();
+                            startLat = geoPoint.latitude;
+                            startLon = geoPoint.longitude;
+                          }
+                        },
+                        androidHotReloadSupport: true,
+                        mapIsLoading: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: const [
+                              CircularProgressIndicator(),
+                              Text("Map is Loading...")
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    buildNominatimPlaceList.isNotEmpty
+                        ? Container(
+                            height: size.height * .283,
+                            color: Colors.white,
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: buildNominatimPlace(),
+                            ),
+                          )
+                        : Container()
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -42,33 +114,51 @@ class _CreatePoolState extends State<CreatePool> {
         List<NominatimPlace> nominatimPlaces =
             await Provider.of<UserModel>(context, listen: false)
                 .getNominatimPlaces(search);
+        for (NominatimPlace nominatimPlace in nominatimPlaces) {
+          nominatimPlace.distance(startLat.toString(), startLon.toString());
+        }
+        setState(() {
+          buildNominatimPlaceList = nominatimPlaces;
+        });
       } catch (e) {
         print("Hata: $e");
       }
     }
   }
 
-  List<Widget> buildPlaces(List<NominatimPlace> nominatimPlaces) {
-    List<Widget> places = [];
-    for (NominatimPlace nominatimPlace in nominatimPlaces) {
-      double d = distance(startLat.toString(), startLon.toString(),
-          nominatimPlace.lat!, nominatimPlace.lon!);
+  List<Widget> buildNominatimPlace() {
+    List<Widget> children = [];
+    for (NominatimPlace nominatimPlace in buildNominatimPlaceList) {
+      children.add(GestureDetector(
+        child: ListTile(
+          leading: Column(
+            children: [
+              const Icon(Icons.location_on),
+              Text("${nominatimPlace.d!.toStringAsFixed(2)} km")
+            ],
+          ),
+          title: Text(nominatimPlace.displayName!),
+        ),
+        onTap: () async {
+          setState(() {
+            buildNominatimPlaceList = [];
+            searchCnt.text = nominatimPlace.displayName!;
+          });
+          //mapController.drawRoadManually()
+          await drawRoute(nominatimPlace.lat!, nominatimPlace.lon!);
+        },
+      ));
     }
-    return places;
+    return children;
   }
 
-  double distance(String lat1, String lon1, String lat2, String lon2) {
-    double lat1Double = double.parse(lat1);
-    double lat2Double = double.parse(lat2);
-    // radius of the earth in km
-    int R = 6371;
-    double dLat = (lat2Double - lat1Double) * (pi / 180);
-    double dLon = (double.parse(lon2) - double.parse(lon1)) * (pi / 180);
-    double a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(lat1Double * (pi / 180)) *
-            cos(lat2Double * (pi / 180)) *
-            sin(dLon / 2) *
-            sin(dLon / 2);
-    return R * 2 * atan2(sqrt(a), sqrt(1 - a));
+  Future drawRoute(String endLat, String endLon) async {
+    try {
+      OSRMRoute osrmRoute = await Provider.of<UserModel>(context, listen: false)
+          .getRoute(startLon.toString(), startLat.toString(), endLon, endLat);
+      print(osrmRoute);
+    } catch (e) {
+      print("Hata: $e");
+    }
   }
 }
