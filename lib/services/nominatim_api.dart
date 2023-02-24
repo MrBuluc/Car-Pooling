@@ -5,8 +5,10 @@ import 'package:car_pooling/services/api.dart';
 import 'package:http/http.dart' as http;
 
 class NominatimApi {
-  Future<List<NominatimPlace>> getNominatimPlaces(String search) async {
-    List nominatimPlaceList = await getNominatimPlaceList(search);
+  Future<List<NominatimPlace>> getNominatimPlaces(String search, double west,
+      double south, double east, double north) async {
+    List nominatimPlaceList =
+        await getNominatimPlaceList(search, west, south, east, north);
     List<NominatimPlace> nominatimPlaces = [];
     for (Map<String, dynamic> json in nominatimPlaceList) {
       nominatimPlaces.add(NominatimPlace.fromJson(json));
@@ -14,11 +16,17 @@ class NominatimApi {
     return nominatimPlaces;
   }
 
-  Future<List> getNominatimPlaceList(String search) async {
+  Future<List> getNominatimPlaceList(String search, double west, double south,
+      double east, double north) async {
     Uri uri = API(
         host: "nominatim.openstreetmap.org",
         path: "search",
-        queryParameters: {"q": search, "format": "json"}).tokenUri();
+        queryParameters: {
+          "q": search,
+          "format": "json",
+          "bounded": "1",
+          "viewbox": "$west,$south,$east,$north"
+        }).tokenUri();
     http.Response response = await http.get(uri);
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

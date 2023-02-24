@@ -120,7 +120,7 @@ class _CreatePoolState extends State<CreatePool> {
       try {
         List<NominatimPlace> nominatimPlaces =
             await Provider.of<UserModel>(context, listen: false)
-                .getNominatimPlaces(search);
+                .getNominatimPlaces(search, west, south, east, north);
         for (NominatimPlace nominatimPlace in nominatimPlaces) {
           nominatimPlace.d = (await distance2point(
                   GeoPoint(latitude: startLat, longitude: startLon),
@@ -129,9 +129,7 @@ class _CreatePoolState extends State<CreatePool> {
                       longitude: double.parse(nominatimPlace.lon!)))) /
               1000;
         }
-        setState(() {
-          buildNominatimPlaceList = nominatimPlaces;
-        });
+        buildNominatimPlaceList = nominatimPlaces;
       } catch (e) {
         print("Hata: $e");
       }

@@ -5,7 +5,9 @@ import 'package:car_pooling/services/nominatim_api.dart';
 class UserRepository {
   final NominatimApi _nominatimApi = locator<NominatimApi>();
 
-  Future<List<NominatimPlace>> getNominatimPlaces(String search) async {
-    return await _nominatimApi.getNominatimPlaces(search);
+  Future<List<NominatimPlace>> getNominatimPlaces(String search, double west,
+      double south, double east, double north) async {
+    return await _nominatimApi.getNominatimPlaces(
+        search, west, south, east, north);
   }
 }
