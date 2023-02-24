@@ -64,7 +64,7 @@ class _CreatePoolState extends State<CreatePool> {
                         trackMyPosition: true,
                         maxZoomLevel: 18,
                         minZoomLevel: 10,
-                        initZoom: 16,
+                        initZoom: 13,
                         userLocationMarker: UserLocationMaker(
                             personMarker: userLocationMarker,
                             directionArrowMarker: userLocationMarker),
