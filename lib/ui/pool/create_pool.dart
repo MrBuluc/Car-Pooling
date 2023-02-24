@@ -14,6 +14,7 @@ class CreatePool extends StatefulWidget {
 class _CreatePoolState extends State<CreatePool> {
   late double startLat;
   late double startLon;
+  double west = 32.5599, south = 39.7626, east = 33.5635, north = 40.6801;
 
   List<NominatimPlace> buildNominatimPlaceList = [];
 
@@ -61,7 +62,9 @@ class _CreatePoolState extends State<CreatePool> {
                       child: OSMFlutter(
                         controller: mapController,
                         trackMyPosition: true,
-                        initZoom: 17,
+                        maxZoomLevel: 18,
+                        minZoomLevel: 10,
+                        initZoom: 16,
                         userLocationMarker: UserLocationMaker(
                             personMarker: userLocationMarker,
                             directionArrowMarker: userLocationMarker),
@@ -71,6 +74,11 @@ class _CreatePoolState extends State<CreatePool> {
                                 await mapController.myLocation();
                             startLat = geoPoint.latitude;
                             startLon = geoPoint.longitude;
+                            mapController.limitAreaMap(BoundingBox(
+                                north: north,
+                                east: east,
+                                south: south,
+                                west: west));
                           }
                         },
                         androidHotReloadSupport: true,
