@@ -33,4 +33,20 @@ class NominatimApi {
     }
     throw API.getError(uri, response);
   }
+
+  Future<NominatimPlace> getStartNominatimPlace(double lat, double lon) async {
+    Uri uri = API(
+        host: "nominatim.openstreetmap.org",
+        path: "reverse",
+        queryParameters: {
+          "format": "json",
+          "lat": lat.toString(),
+          "lon": lon.toString()
+        }).tokenUri();
+    http.Response response = await http.get(uri);
+    if (response.statusCode == 200) {
+      return NominatimPlace.fromJson(jsonDecode(response.body));
+    }
+    throw API.getError(uri, response);
+  }
 }

@@ -14,7 +14,7 @@ class CreatePool extends StatefulWidget {
 class _CreatePoolState extends State<CreatePool> {
   late double startLat;
   late double startLon;
-  double west = 32.5599, south = 39.7626, east = 33.5635, north = 40.6801;
+  double west = 30.8203, south = 38.6769, east = 33.8558, north = 40.7537;
 
   List<NominatimPlace> buildNominatimPlaceList = [];
 
@@ -31,6 +31,8 @@ class _CreatePoolState extends State<CreatePool> {
       size: 100,
     ),
   );
+
+  String? startDisplayName;
 
   @override
   void dispose() {
@@ -64,7 +66,7 @@ class _CreatePoolState extends State<CreatePool> {
                         trackMyPosition: true,
                         maxZoomLevel: 18,
                         minZoomLevel: 10,
-                        initZoom: 13,
+                        initZoom: 10,
                         userLocationMarker: UserLocationMaker(
                             personMarker: userLocationMarker,
                             directionArrowMarker: userLocationMarker),
@@ -79,6 +81,11 @@ class _CreatePoolState extends State<CreatePool> {
                                 east: east,
                                 south: south,
                                 west: west));
+                            startDisplayName = (await Provider.of<UserModel>(
+                                        context,
+                                        listen: false)
+                                    .getStartNominatimPlace(startLat, startLon))
+                                .displayName;
                           }
                         },
                         androidHotReloadSupport: true,
@@ -155,7 +162,7 @@ class _CreatePoolState extends State<CreatePool> {
           });
           searchCnt.text = nominatimPlace.displayName!;
           await Future.delayed(const Duration(seconds: 3));
-          await mapController.drawRoad(
+          RoadInfo roadInfo = await mapController.drawRoad(
               GeoPoint(latitude: startLat, longitude: startLon),
               GeoPoint(
                   latitude: double.parse(nominatimPlace.lat!),

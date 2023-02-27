@@ -18,6 +18,15 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  Future<NominatimPlace> getStartNominatimPlace(double lat, double lon) async {
+    try {
+      return await _userRepository.getStartNominatimPlace(lat, lon);
+    } catch (e) {
+      printError("getStartNominatimPlace", e);
+      rethrow;
+    }
+  }
+
   printError(String funcName, Object e) {
     print("Usermodel $funcName hata: $e");
   }

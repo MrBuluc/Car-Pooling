@@ -10,4 +10,8 @@ class UserRepository {
     return await _nominatimApi.getNominatimPlaces(
         search, west, south, east, north);
   }
+
+  Future<NominatimPlace> getStartNominatimPlace(double lat, double lon) async {
+    return await _nominatimApi.getStartNominatimPlace(lat, lon);
+  }
 }
