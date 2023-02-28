@@ -34,6 +34,8 @@ class _CreatePoolState extends State<CreatePool> {
 
   String? startDisplayName;
 
+  int count = 0;
+
   @override
   void dispose() {
     mapController.dispose();
@@ -81,11 +83,15 @@ class _CreatePoolState extends State<CreatePool> {
                                 east: east,
                                 south: south,
                                 west: west));
-                            startDisplayName = (await Provider.of<UserModel>(
-                                        context,
-                                        listen: false)
-                                    .getStartNominatimPlace(startLat, startLon))
-                                .displayName;
+                            if (count == 0) {
+                              startDisplayName = (await Provider.of<UserModel>(
+                                          context,
+                                          listen: false)
+                                      .getStartNominatimPlace(
+                                          startLat, startLon))
+                                  .displayName;
+                              count++;
+                            }
                           }
                         },
                         androidHotReloadSupport: true,
@@ -136,7 +142,11 @@ class _CreatePoolState extends State<CreatePool> {
                       longitude: double.parse(nominatimPlace.lon!)))) /
               1000;
         }
-        buildNominatimPlaceList = nominatimPlaces;
+        if (nominatimPlaces.isNotEmpty) {
+          setState(() {
+            buildNominatimPlaceList = nominatimPlaces;
+          });
+        }
       } catch (e) {
         print("Hata: $e");
       }
