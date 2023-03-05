@@ -12,8 +12,6 @@ class CreatePool extends StatefulWidget {
 }
 
 class _CreatePoolState extends State<CreatePool> {
-  late double startLat;
-  late double startLon;
   double west = 30.8203, south = 38.6769, east = 33.8558, north = 40.7537;
 
   List<NominatimPlace> buildNominatimPlaceList = [];
@@ -32,9 +30,13 @@ class _CreatePoolState extends State<CreatePool> {
     ),
   );
 
-  String? startDisplayName;
-
   int count = 0;
+
+  late StateSetter findMatchState;
+
+  bool isProgress = false;
+
+  Trip trip = Trip();
 
   @override
   void dispose() {
@@ -48,80 +50,104 @@ class _CreatePoolState extends State<CreatePool> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Padding(
-          padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-          child: Column(
-            children: [
-              TextFormField(
-                controller: searchCnt,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                onChanged: getNominatimPlaces,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Stack(
-                  children: [
-                    SizedBox(
-                      height: size.height * .8,
-                      child: OSMFlutter(
-                        controller: mapController,
-                        trackMyPosition: true,
-                        maxZoomLevel: 18,
-                        minZoomLevel: 10,
-                        initZoom: 10,
-                        userLocationMarker: UserLocationMaker(
-                            personMarker: userLocationMarker,
-                            directionArrowMarker: userLocationMarker),
-                        onMapIsReady: (ready) async {
-                          if (ready) {
-                            GeoPoint geoPoint =
-                                await mapController.myLocation();
-                            startLat = geoPoint.latitude;
-                            startLon = geoPoint.longitude;
-                            mapController.limitAreaMap(BoundingBox(
-                                north: north,
-                                east: east,
-                                south: south,
-                                west: west));
-                            if (count == 0) {
-                              startDisplayName = (await Provider.of<UserModel>(
-                                          context,
-                                          listen: false)
-                                      .getStartNominatimPlace(
-                                          startLat, startLon))
-                                  .displayName;
-                              count++;
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: searchCnt,
+                  decoration:
+                      const InputDecoration(border: OutlineInputBorder()),
+                  onChanged: getNominatimPlaces,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        height: size.height * .8,
+                        child: OSMFlutter(
+                          controller: mapController,
+                          trackMyPosition: true,
+                          maxZoomLevel: 18,
+                          minZoomLevel: 10,
+                          initZoom: 10,
+                          userLocationMarker: UserLocationMaker(
+                              personMarker: userLocationMarker,
+                              directionArrowMarker: userLocationMarker),
+                          onMapIsReady: (ready) async {
+                            if (ready) {
+                              GeoPoint geoPoint =
+                                  await mapController.myLocation();
+                              trip.originLat = geoPoint.latitude;
+                              trip.originLon = geoPoint.longitude;
+                              mapController.limitAreaMap(BoundingBox(
+                                  north: north,
+                                  east: east,
+                                  south: south,
+                                  west: west));
+                              if (count == 0) {
+                                trip.origin = (await Provider.of<UserModel>(
+                                            context,
+                                            listen: false)
+                                        .getStartNominatimPlace(
+                                            trip.originLat!, trip.originLon!))
+                                    .displayName;
+                                count++;
+                              }
                             }
-                          }
-                        },
-                        androidHotReloadSupport: true,
-                        mapIsLoading: Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              CircularProgressIndicator(),
-                              Text("Map is Loading...")
-                            ],
+                          },
+                          androidHotReloadSupport: true,
+                          mapIsLoading: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: const [
+                                CircularProgressIndicator(),
+                                Text("Map is Loading...")
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    buildNominatimPlaceList.isNotEmpty
-                        ? Container(
-                            height: size.height * .283,
-                            color: Colors.white,
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: buildNominatimPlace(),
-                            ),
-                          )
-                        : Container()
-                  ],
+                      buildNominatimPlaceList.isNotEmpty
+                          ? Container(
+                              height: size.height * .283,
+                              color: Colors.white,
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: buildNominatimPlace(),
+                              ),
+                            )
+                          : Container()
+                    ],
+                  ),
                 ),
-              )
-            ],
+                StatefulBuilder(
+                    builder: (BuildContext context, StateSetter rowState) {
+                  findMatchState = rowState;
+                  return trip.route != null
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              child: isProgress
+                                  ? const CircularProgressIndicator()
+                                  : const Text("Find Match"),
+                              onPressed: () {
+                                if (!isProgress) {
+                                  findMatch();
+                                }
+                              },
+                            )
+                          ],
+                        )
+                      : Container();
+                })
+              ],
+            ),
           ),
         ),
       ),
