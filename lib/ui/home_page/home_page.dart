@@ -1,3 +1,4 @@
+import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/ui/pool/create_pool.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,9 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               child: const Text("Yolculuk Oluştur"),
               onPressed: () {
-                goToPage(const CreatePool());
+                goToPage(const CreatePool(
+                  role: Role.driver,
+                ));
               },
             ),
             ElevatedButton(

@@ -1,11 +1,15 @@
+import 'package:car_pooling/models/match_response.dart';
 import 'package:car_pooling/models/nominatim_place.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/trip.dart';
+
 class CreatePool extends StatefulWidget {
-  const CreatePool({Key? key}) : super(key: key);
+  final Role role;
+  const CreatePool({Key? key, required this.role}) : super(key: key);
 
   @override
   State<CreatePool> createState() => _CreatePoolState();
@@ -162,7 +166,8 @@ class _CreatePoolState extends State<CreatePool> {
                 .getNominatimPlaces(search, west, south, east, north);
         for (NominatimPlace nominatimPlace in nominatimPlaces) {
           nominatimPlace.d = (await distance2point(
-                  GeoPoint(latitude: startLat, longitude: startLon),
+                  GeoPoint(
+                      latitude: trip.originLat!, longitude: trip.originLon!),
                   GeoPoint(
                       latitude: double.parse(nominatimPlace.lat!),
                       longitude: double.parse(nominatimPlace.lon!)))) /
@@ -193,21 +198,56 @@ class _CreatePoolState extends State<CreatePool> {
           title: Text(nominatimPlace.displayName!),
         ),
         onTap: () async {
-          setState(() {
-            buildNominatimPlaceList = [];
-          });
-          searchCnt.text = nominatimPlace.displayName!;
-          await Future.delayed(const Duration(seconds: 3));
-          RoadInfo roadInfo = await mapController.drawRoad(
-              GeoPoint(latitude: startLat, longitude: startLon),
-              GeoPoint(
-                  latitude: double.parse(nominatimPlace.lat!),
-                  longitude: double.parse(nominatimPlace.lon!)),
-              roadOption:
-                  const RoadOption(roadColor: Colors.red, roadWidth: 10));
+          trip.destination = nominatimPlace.displayName;
+          trip.destinationLat = nominatimPlace.lat!;
+          trip.destinationLon = nominatimPlace.lon!;
+          await drawRoute(nominatimPlace);
         },
       ));
     }
     return children;
+  }
+
+  Future drawRoute(NominatimPlace nominatimPlace) async {
+    setState(() {
+      buildNominatimPlaceList = [];
+    });
+    searchCnt.text = nominatimPlace.displayName!;
+    await Future.delayed(const Duration(seconds: 3));
+    RoadInfo roadInfo = await mapController.drawRoad(
+        GeoPoint(latitude: trip.originLat!, longitude: trip.originLon!),
+        GeoPoint(
+            latitude: double.parse(nominatimPlace.lat!),
+            longitude: double.parse(nominatimPlace.lon!)),
+        roadOption: const RoadOption(roadColor: Colors.red, roadWidth: 10));
+    convertGeoPointToDoubleList(roadInfo.route);
+    findMatchState(() {});
+  }
+
+  convertGeoPointToDoubleList(List<GeoPoint> geoPointList) {
+    List<List<double>> route = [];
+    for (GeoPoint geoPoint in geoPointList) {
+      route.add([geoPoint.latitude, geoPoint.longitude]);
+    }
+    trip.route = route;
+  }
+
+  Future findMatch() async {
+    findMatchState(() {
+      isProgress = true;
+    });
+
+    try {
+      MatchResponse matchResponse =
+          await Provider.of<UserModel>(context, listen: false)
+              .match(widget.role, trip);
+      print(matchResponse);
+    } catch (e) {
+      print("Hata: $e");
+    }
+
+    findMatchState(() {
+      isProgress = false;
+    });
   }
 }

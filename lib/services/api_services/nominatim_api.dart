@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:car_pooling/models/nominatim_place.dart';
-import 'package:car_pooling/services/api.dart';
+import 'package:car_pooling/services/api_services/api.dart';
 import 'package:http/http.dart' as http;
 
 class NominatimApi {
