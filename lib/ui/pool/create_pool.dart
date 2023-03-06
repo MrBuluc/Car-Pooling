@@ -40,7 +40,7 @@ class _CreatePoolState extends State<CreatePool> {
 
   bool isProgress = false;
 
-  Trip trip = Trip();
+  Trip trip = Trip(route: []);
 
   @override
   void dispose() {
@@ -132,7 +132,7 @@ class _CreatePoolState extends State<CreatePool> {
                 StatefulBuilder(
                     builder: (BuildContext context, StateSetter rowState) {
                   findMatchState = rowState;
-                  return trip.route != null
+                  return trip.route!.isNotEmpty
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

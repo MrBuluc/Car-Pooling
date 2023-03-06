@@ -5,7 +5,7 @@ class MatchResponse {
   String? newTripId;
 
   MatchResponse.fromJson(Map<String, dynamic> json) {
-    List<Map<String, dynamic>> resultList = json["result"];
+    List resultList = json["result"];
     for (Map<String, dynamic> tripJson in resultList) {
       result.add(Trip.fromJson(tripJson));
     }

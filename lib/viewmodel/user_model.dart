@@ -32,7 +32,7 @@ class UserModel with ChangeNotifier {
   Future<MatchResponse> match(Role role, Trip trip) async {
     try {
       trip.userId = "KGd2I6yOP8Vo6hwU6gj7DuvuZpO2";
-      trip.driver = "Hakkıcan Bülüç";
+      trip.driver = role == Role.driver ? "Hakkıcan Bülüç" : null;
       return await _userRepository.match(role, trip);
     } catch (e) {
       printError("match", e);

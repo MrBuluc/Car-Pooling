@@ -17,9 +17,10 @@ class MatchApi {
         break;
     }
     Uri uri = API(path: path, port: 8000).tokenUri();
-    http.Response response = await http.post(uri, body: tripMap);
+    http.Response response = await http.post(uri, body: jsonEncode(tripMap));
     if (response.statusCode == 200) {
-      return MatchResponse.fromJson(jsonDecode(response.body));
+      return MatchResponse.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
     }
     throw API.getError(uri, response);
   }
