@@ -36,7 +36,7 @@ class _MatchesPageState extends State<MatchesPage> {
                   return Column(
                     children: [
                       Text(
-                        "Username: ${matchedTrip.driver}",
+                        "Username: ${matchedTrip.username}",
                         style: textStyle,
                       ),
                       Text(

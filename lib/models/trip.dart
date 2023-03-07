@@ -10,6 +10,7 @@ class Trip {
   String? destinationLat;
   String? destinationLon;
   String? userId;
+  String? username;
   String? driver;
   double? matchRate;
   DateTime? createdAt;
@@ -25,6 +26,7 @@ class Trip {
       this.destinationLat,
       this.destinationLon,
       this.userId,
+      this.username,
       this.driver,
       this.matchRate,
       this.role});
@@ -32,6 +34,7 @@ class Trip {
   Trip.fromJson(Map<String, dynamic> json)
       : this(
             id: json["id"],
+            username: json["username"],
             driver: json["driver"],
             destination: json["destination"],
             origin: json["origin"],
@@ -57,6 +60,7 @@ class Trip {
         'route: ${route != null ? route![0] : null}, origin: $origin, '
         'originLat: $originLat, originLon: $originLon, '
         'destinationLat: $destinationLat, destinationLon: $destinationLon, '
-        'userId: $userId, driver: $driver, matchRate: $matchRate, role: $role}';
+        'userId: $userId, username: $username, driver: $driver, '
+        'matchRate: $matchRate, role: $role}';
   }
 }
