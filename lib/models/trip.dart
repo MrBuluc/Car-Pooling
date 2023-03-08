@@ -1,5 +1,7 @@
 enum Role { driver, passenger }
 
+enum Status { active, ended }
+
 class Trip {
   String? id;
   String? destination;
@@ -15,6 +17,7 @@ class Trip {
   double? matchRate;
   DateTime? createdAt;
   Role? role;
+  Status? status;
 
   Trip(
       {this.id,
@@ -31,16 +34,37 @@ class Trip {
       this.matchRate,
       this.role});
 
-  Trip.fromJson(Map<String, dynamic> json)
-      : this(
-            id: json["id"],
-            username: json["username"],
-            driver: json["driver"],
-            destination: json["destination"],
-            origin: json["origin"],
-            originLon: json["origin_lon"],
-            originLat: json["origin_lat"],
-            matchRate: json["match_rate"]);
+  Trip.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    destination = json["destination"];
+    origin = json["origin"];
+    originLat = json["origin_lat"];
+    originLon = json["origin_lon"];
+    destinationLat = json["destination_lat"];
+    destinationLon = json["destination_lon"];
+    username = json["username"];
+    driver = json["driver"];
+    matchRate = json["match_rate"];
+    role = json["role"] != null ? convertStringToRole(json["role"]) : null;
+    status =
+        json["status"] != null ? convertStringToStatus(json["status"]) : null;
+  }
+
+  Role convertStringToRole(String roleStr) {
+    if (roleStr == "passenger") {
+      return Role.passenger;
+    } else {
+      return Role.driver;
+    }
+  }
+
+  Status convertStringToStatus(String statusStr) {
+    if (statusStr == "active") {
+      return Status.active;
+    } else {
+      return Status.ended;
+    }
+  }
 
   Map<String, dynamic> toJson() => {
         if (route != null) "route": route,
@@ -61,6 +85,6 @@ class Trip {
         'originLat: $originLat, originLon: $originLon, '
         'destinationLat: $destinationLat, destinationLon: $destinationLon, '
         'userId: $userId, username: $username, driver: $driver, '
-        'matchRate: $matchRate, role: $role}';
+        'matchRate: $matchRate, role: $role, status: $status}';
   }
 }

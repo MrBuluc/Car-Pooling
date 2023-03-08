@@ -1,7 +1,8 @@
-import 'package:car_pooling/models/match_response.dart';
+import 'package:car_pooling/models/match/post_match_response.dart';
 import 'package:car_pooling/models/nominatim_place.dart';
 import 'package:car_pooling/ui/matches/matches_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
+import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
@@ -137,15 +138,10 @@ class _CreatePoolState extends State<CreatePool> {
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            ElevatedButton(
-                              child: isProgress
-                                  ? const CircularProgressIndicator()
-                                  : const Text("Find Match"),
-                              onPressed: () {
-                                if (!isProgress) {
-                                  findMatch();
-                                }
-                              },
+                            ProgressElevatedButton(
+                              isProgress: isProgress,
+                              text: "Find Match",
+                              onPressed: findMatch,
                             )
                           ],
                         )
@@ -239,11 +235,14 @@ class _CreatePoolState extends State<CreatePool> {
     });
 
     try {
-      MatchResponse matchResponse =
+      PostMatchResponse matchResponse =
           await Provider.of<UserModel>(context, listen: false)
-              .match(widget.role, trip);
+              .postMatch(widget.role, trip);
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => MatchesPage(matchResponse: matchResponse),
+        builder: (context) => MatchesPage(
+          matchResponse: matchResponse,
+          role: widget.role,
+        ),
       ));
     } catch (e) {
       print("Hata: $e");

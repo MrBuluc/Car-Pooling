@@ -1,20 +1,28 @@
-import 'package:car_pooling/models/match_response.dart';
+import 'package:car_pooling/models/match/get_match_response.dart';
+import 'package:car_pooling/models/match/post_match_response.dart';
+import 'package:car_pooling/viewmodel/user_model.dart';
+import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/trip.dart';
 
 class MatchesPage extends StatefulWidget {
-  final MatchResponse matchResponse;
-  const MatchesPage({Key? key, required this.matchResponse}) : super(key: key);
+  final PostMatchResponse matchResponse;
+  final Role role;
+  const MatchesPage({Key? key, required this.matchResponse, required this.role})
+      : super(key: key);
 
   @override
   State<MatchesPage> createState() => _MatchesPageState();
 }
 
 class _MatchesPageState extends State<MatchesPage> {
-  late MatchResponse matchResponse;
+  late PostMatchResponse matchResponse;
 
   TextStyle textStyle = const TextStyle(fontSize: 20);
+
+  bool isProgress = false;
 
   @override
   void initState() {
@@ -54,10 +62,12 @@ class _MatchesPageState extends State<MatchesPage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      ElevatedButton(
-                        child: const Text("Accept match"),
-                        onPressed: () {},
-                      ),
+                      ProgressElevatedButton(
+                          isProgress: isProgress,
+                          text: "Accept match",
+                          onPressed: () {
+                            acceptMatch(matchedTrip.id!);
+                          }),
                       const Divider(
                         height: 1,
                         color: Colors.grey,
@@ -78,5 +88,24 @@ class _MatchesPageState extends State<MatchesPage> {
               ),
       ),
     ));
+  }
+
+  Future acceptMatch(String matchId) async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      GetMatchResponse getMatchResponse =
+          await Provider.of<UserModel>(context, listen: false)
+              .getMatch(widget.role, matchResponse.newTripId!, matchId);
+      print(getMatchResponse);
+    } catch (e) {
+      print("Hata: $e");
+    }
+
+    setState(() {
+      isProgress = false;
+    });
   }
 }

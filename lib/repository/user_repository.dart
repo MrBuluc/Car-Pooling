@@ -3,7 +3,8 @@ import 'package:car_pooling/models/nominatim_place.dart';
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/services/api_services/match_api.dart';
 
-import '../models/match_response.dart';
+import '../models/match/get_match_response.dart';
+import '../models/match/post_match_response.dart';
 import '../services/api_services/nominatim_api.dart';
 
 class UserRepository {
@@ -20,7 +21,12 @@ class UserRepository {
     return await _nominatimApi.getStartNominatimPlace(lat, lon);
   }
 
-  Future<MatchResponse> match(Role role, Trip trip) async {
-    return await _matchApi.match(role, trip.toJson());
+  Future<PostMatchResponse> postMatch(Role role, Trip trip) async {
+    return await _matchApi.postMatch(role, trip.toJson());
+  }
+
+  Future<GetMatchResponse> getMatch(
+      Role role, String userId, String tripId, String matchId) async {
+    return await _matchApi.getMatch(role, userId, tripId, matchId);
   }
 }
