@@ -1,6 +1,6 @@
 import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
-import 'package:car_pooling/widgets/map_is_loading.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
@@ -51,11 +51,11 @@ class _TripDetailPageState extends State<TripDetailPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
+            /*SizedBox(
               height: size.height * .8,
               child: OSMFlutter(
                 controller: mapController,
-                trackMyPosition: trip.status! != Status.active,
+                trackMyPosition: trip.status! == Status.active,
                 maxZoomLevel: 18,
                 minZoomLevel: 8,
                 initZoom: 13,
@@ -66,6 +66,20 @@ class _TripDetailPageState extends State<TripDetailPage> {
                   await onMapIsReady(ready);
                 },
                 mapIsLoading: const MapIsLoading(),
+              ),
+            ),*/
+            Container(
+              height: size.height * .8,
+              color: Colors.red,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 10, left: 15, right: 10, bottom: 10),
+              child: Column(
+                children: buildTripInfo(),
               ),
             )
           ],
@@ -81,7 +95,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
       GeoPoint destinationGeoPoint = GeoPoint(
           latitude: double.parse(trip.destinationLat!),
           longitude: double.parse(trip.destinationLon!));
-      if (trip.status != Status.active) {
+      if (trip.status == Status.active) {
         GeoPoint myLocationGeoPoint = await mapController.myLocation();
         await mapController.drawRoad(myLocationGeoPoint, destinationGeoPoint,
             roadOption: const RoadOption(roadColor: Colors.red, roadWidth: 10));
@@ -94,4 +108,30 @@ class _TripDetailPageState extends State<TripDetailPage> {
       }
     }
   }
+
+  Widget buildTripInfoRow(String title, String info) {
+    return Row(
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+        ),
+        Expanded(
+          child: Text(
+            info,
+            style: const TextStyle(fontSize: 20),
+          ),
+        )
+      ],
+    );
+  }
+
+  List<Widget> buildTripInfo() => [
+        buildTripInfoRow("Date: ", trip.createdAtToString()),
+        buildTripInfoRow("Destination: ", trip.destination!),
+        buildTripInfoRow("From: ", trip.origin!),
+        buildTripInfoRow("Driver's name: ", trip.driver!),
+        buildTripInfoRow("Role: ", trip.role!.name),
+        buildTripInfoRow("Status: ", trip.status!.name)
+      ];
 }
