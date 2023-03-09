@@ -1,5 +1,6 @@
 import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
+import 'package:car_pooling/ui/trips/matched_trips_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -29,6 +30,8 @@ class _TripDetailPageState extends State<TripDetailPage> {
   );
 
   late Trip trip;
+
+  TextStyle buttonTextStyle = const TextStyle(fontSize: 20);
 
   @override
   void initState() {
@@ -81,7 +84,30 @@ class _TripDetailPageState extends State<TripDetailPage> {
               child: Column(
                 children: buildTripInfo(),
               ),
-            )
+            ),
+            ElevatedButton(
+              child: Text(
+                trip.role! == Role.driver
+                    ? "Matched Passengers"
+                    : "Matched Drives",
+                style: buttonTextStyle,
+              ),
+              onPressed: () {
+                goToPage(MatchedTripsPage(
+                    role: trip.role!, trips: widget.getMatchResponse.matched));
+              },
+            ),
+            trip.status! == Status.active
+                ? ElevatedButton(
+                    child: Text(
+                      trip.role! == Role.driver
+                          ? "Available Passengers"
+                          : "Available Drivers",
+                      style: buttonTextStyle,
+                    ),
+                    onPressed: () {},
+                  )
+                : Container()
           ],
         ),
       ),
@@ -134,4 +160,10 @@ class _TripDetailPageState extends State<TripDetailPage> {
         buildTripInfoRow("Role: ", trip.role!.name),
         buildTripInfoRow("Status: ", trip.status!.name)
       ];
+
+  goToPage(Widget page) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => page,
+    ));
+  }
 }
