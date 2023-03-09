@@ -45,6 +45,9 @@ class Trip {
     username = json["username"];
     driver = json["driver"];
     matchRate = json["match_rate"];
+    createdAt = json["created_at"] != null
+        ? (DateTime.parse(json["created_at"])).add(const Duration(hours: 3))
+        : null;
     role = json["role"] != null ? convertStringToRole(json["role"]) : null;
     status =
         json["status"] != null ? convertStringToStatus(json["status"]) : null;
@@ -85,6 +88,7 @@ class Trip {
         'originLat: $originLat, originLon: $originLon, '
         'destinationLat: $destinationLat, destinationLon: $destinationLon, '
         'userId: $userId, username: $username, driver: $driver, '
-        'matchRate: $matchRate, role: $role, status: $status}';
+        'matchRate: $matchRate, createdAt: $createdAt, role: $role, '
+        'status: $status}';
   }
 }

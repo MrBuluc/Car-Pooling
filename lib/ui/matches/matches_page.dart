@@ -1,5 +1,6 @@
 import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/match/post_match_response.dart';
+import 'package:car_pooling/ui/trips/trip_detail_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,10 @@ class _MatchesPageState extends State<MatchesPage> {
       GetMatchResponse getMatchResponse =
           await Provider.of<UserModel>(context, listen: false)
               .getMatch(widget.role, matchResponse.newTripId!, matchId);
-      print(getMatchResponse);
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            TripDetailPage(getMatchResponse: getMatchResponse),
+      ));
     } catch (e) {
       print("Hata: $e");
     }
