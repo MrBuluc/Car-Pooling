@@ -1,6 +1,7 @@
 import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/ui/trips/matched_trips_page.dart';
+import 'package:car_pooling/ui/trips/matches_trips_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -105,7 +106,12 @@ class _TripDetailPageState extends State<TripDetailPage> {
                           : "Available Drivers",
                       style: buttonTextStyle,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      goToPage(MatchesTripsPage(
+                          role: trip.role!,
+                          trips: widget.getMatchResponse.matches,
+                          tripId: trip.id!));
+                    },
                   )
                 : Container()
           ],
