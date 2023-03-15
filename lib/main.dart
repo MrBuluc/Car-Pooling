@@ -1,5 +1,5 @@
 import 'package:car_pooling/locator.dart';
-import 'package:car_pooling/ui/home_page/home_page.dart';
+import 'package:car_pooling/ui/users_page/users_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const HomePage(),
+        home: const UsersPage(),
       ),
     );
   }
