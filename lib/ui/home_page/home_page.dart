@@ -10,6 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextStyle textStyle = const TextStyle(fontSize: 20);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +20,10 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              child: const Text("Yolculuk Oluştur"),
+              child: Text(
+                "Yolculuk Oluştur",
+                style: textStyle,
+              ),
               onPressed: () {
                 goToPage(const CreatePool(
                   role: Role.driver,
@@ -26,7 +31,10 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ElevatedButton(
-              child: const Text("Yolculuk Ara"),
+              child: Text(
+                "Yolculuk Ara",
+                style: textStyle,
+              ),
               onPressed: () {},
             )
           ],

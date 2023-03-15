@@ -2,9 +2,12 @@ import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/ui/trips/matched_trips_page.dart';
 import 'package:car_pooling/ui/trips/matches_trips_page.dart';
+import 'package:car_pooling/viewmodel/user_model.dart';
+import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:provider/provider.dart';
 
 class TripDetailPage extends StatefulWidget {
   final GetMatchResponse getMatchResponse;
@@ -33,6 +36,8 @@ class _TripDetailPageState extends State<TripDetailPage> {
   late Trip trip;
 
   TextStyle buttonTextStyle = const TextStyle(fontSize: 20);
+
+  bool isProgress = false;
 
   @override
   void initState() {
@@ -113,7 +118,20 @@ class _TripDetailPageState extends State<TripDetailPage> {
                           tripId: trip.id!));
                     },
                   )
-                : Container()
+                : Container(),
+            Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ProgressElevatedButton(
+                      isProgress: isProgress,
+                      text: "End Ride",
+                      backgroundColor: Colors.red,
+                      onPressed: endRide),
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -141,6 +159,15 @@ class _TripDetailPageState extends State<TripDetailPage> {
     }
   }
 
+  List<Widget> buildTripInfo() => [
+        buildTripInfoRow("Date: ", trip.createdAtToString()),
+        buildTripInfoRow("Destination: ", trip.destination!),
+        buildTripInfoRow("From: ", trip.origin!),
+        buildTripInfoRow("Driver's name: ", trip.driver!),
+        buildTripInfoRow("Role: ", trip.role!.name),
+        buildTripInfoRow("Status: ", trip.status!.name)
+      ];
+
   Widget buildTripInfoRow(String title, String info) {
     return Row(
       children: [
@@ -158,18 +185,29 @@ class _TripDetailPageState extends State<TripDetailPage> {
     );
   }
 
-  List<Widget> buildTripInfo() => [
-        buildTripInfoRow("Date: ", trip.createdAtToString()),
-        buildTripInfoRow("Destination: ", trip.destination!),
-        buildTripInfoRow("From: ", trip.origin!),
-        buildTripInfoRow("Driver's name: ", trip.driver!),
-        buildTripInfoRow("Role: ", trip.role!.name),
-        buildTripInfoRow("Status: ", trip.status!.name)
-      ];
-
   goToPage(Widget page) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => page,
     ));
+  }
+
+  Future endRide() async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      bool result = await Provider.of<UserModel>(context, listen: false)
+          .endTrip(trip.id!);
+      if (result) {
+        int count = 0;
+        Navigator.popUntil(context, (route) => count++ == 3);
+      }
+    } catch (e) {
+      print("Hata: $e");
+      setState(() {
+        isProgress = false;
+      });
+    }
   }
 }

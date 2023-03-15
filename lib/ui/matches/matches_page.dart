@@ -146,6 +146,9 @@ class _MatchesPageState extends State<MatchesPage> {
       }
     } catch (e) {
       print("Hata: $e");
+      setState(() {
+        isProgress = false;
+      });
     }
   }
 }
