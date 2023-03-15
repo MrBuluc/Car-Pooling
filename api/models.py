@@ -42,6 +42,7 @@ class Trip(object):
     @staticmethod
     def from_dict(source):
         trip = Trip()
+        trip.id = str(uuid4())
 
         if u'id' in source:
             trip.id = source[u'id']

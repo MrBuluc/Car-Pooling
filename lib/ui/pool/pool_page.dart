@@ -10,16 +10,16 @@ import 'package:provider/provider.dart';
 
 import '../../models/trip.dart';
 
-class CreatePool extends StatefulWidget {
+class PoolPage extends StatefulWidget {
   final Role role;
-  const CreatePool({Key? key, required this.role}) : super(key: key);
+  const PoolPage({Key? key, required this.role}) : super(key: key);
 
   @override
-  State<CreatePool> createState() => _CreatePoolState();
+  State<PoolPage> createState() => _PoolPageState();
 }
 
-class _CreatePoolState extends State<CreatePool> {
-  double west = 30.8203, south = 38.6769, east = 33.8558, north = 40.7537;
+class _PoolPageState extends State<PoolPage> {
+  double west = 27.045, south = 35.93, east = 29.87, north = 37.928;
 
   List<NominatimPlace> buildNominatimPlaceList = [];
 
@@ -71,7 +71,7 @@ class _CreatePoolState extends State<CreatePool> {
                   child: Stack(
                     children: [
                       SizedBox(
-                        height: size.height * .8,
+                        height: size.height * .76,
                         child: OSMFlutter(
                           controller: mapController,
                           trackMyPosition: true,
@@ -88,11 +88,6 @@ class _CreatePoolState extends State<CreatePool> {
                                   await mapController.myLocation();
                               trip.originLat = geoPoint.latitude;
                               trip.originLon = geoPoint.longitude;
-                              mapController.limitAreaMap(BoundingBox(
-                                  north: north,
-                                  east: east,
-                                  south: south,
-                                  west: west));
                             }
                           },
                           mapIsLoading: const MapIsLoading(),

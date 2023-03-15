@@ -1,5 +1,5 @@
 import 'package:car_pooling/models/trip.dart';
-import 'package:car_pooling/ui/pool/create_pool.dart';
+import 'package:car_pooling/ui/pool/pool_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
                 style: textStyle,
               ),
               onPressed: () {
-                goToPage(const CreatePool(
+                goToPage(const PoolPage(
                   role: Role.driver,
                 ));
               },
@@ -35,7 +35,9 @@ class _HomePageState extends State<HomePage> {
                 "Yolculuk Ara",
                 style: textStyle,
               ),
-              onPressed: () {},
+              onPressed: () {
+                goToPage(const PoolPage(role: Role.passenger));
+              },
             )
           ],
         ),

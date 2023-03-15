@@ -28,6 +28,16 @@ def match_passenger(body: str = Body()):
     return {"result": matches, "id": trip.id}
 
 
+@app.post("/match/driver")
+def post_match_driver(body: str = Body()):
+    trip = Trip.from_dict(json.loads(body))
+    trip.role = Role.passenger
+    trips_col_ref = firestore.client().collection(u'Trips')
+    cancel_former_trips(trips_col_ref, trip.user_id)
+    save_trip(trips_col_ref, trip)
+    matches = find_matches(trips_col_ref, Role.driver, trip.route)
+    return {"result": matches, "id": trip.id}
+
 @app.get("/match/driver")
 def match_driver(user_id, trip_id, match_id):
     trips_col_ref = firestore.client().collection(u'Trips')
@@ -99,8 +109,7 @@ def find_matches(trips_col_ref, role: Role, route: List[GeoPoint]):
         trip = Trip.from_dict(tripDict.to_dict())
         match_rate = match_routes(route, trip.route)
         if match_rate >= min_match_rate:
-            if role == Role.passenger:
-                username = get_username(trip.user_id)
+            username = get_username(trip.user_id)
 
             matches.append({"id": trip.id, "username": username, "driver": trip.driver,
                             "destination": trip.destination, "origin": trip.origin,
