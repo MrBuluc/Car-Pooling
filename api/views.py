@@ -33,7 +33,8 @@ def match_driver(user_id, trip_id, match_id):
     trips_col_ref = firestore.client().collection(u'Trips')
     update_trip(trips_col_ref, match_id, {
                 u'matches': ArrayUnion([f'{trip_id}'])})
-    update_trip(trips_col_ref, trip_id, {u'matches': [match_id]})
+    update_trip(trips_col_ref, trip_id, {
+                u'matches': ArrayUnion([f'{match_id}'])})
     return trip_detail(user_id, trip_id)
 
 
@@ -59,6 +60,7 @@ def trip_detail(user_id, trip_id):
                     match_rate = match_routes(trip.route, mtrip.route)
                     if match_rate >= min_match_rate:
                         mtrip.match_rate = match_rate * 100
+                        mtrip.username = get_username(mtrip.user_id)
                         matches.append(mtrip)
     # else:
     return {"trip": trip.to_dict(), "matched": matched, "matches": matches}

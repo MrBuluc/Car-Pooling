@@ -37,8 +37,6 @@ class _CreatePoolState extends State<CreatePool> {
     ),
   );
 
-  int count = 0;
-
   late StateSetter findMatchState;
 
   bool isProgress = false;
@@ -95,15 +93,6 @@ class _CreatePoolState extends State<CreatePool> {
                                   east: east,
                                   south: south,
                                   west: west));
-                              if (count == 0) {
-                                trip.origin = (await Provider.of<UserModel>(
-                                            context,
-                                            listen: false)
-                                        .getStartNominatimPlace(
-                                            trip.originLat!, trip.originLon!))
-                                    .displayName;
-                                count++;
-                              }
                             }
                           },
                           mapIsLoading: const MapIsLoading(),
@@ -226,9 +215,12 @@ class _CreatePoolState extends State<CreatePool> {
     });
 
     try {
+      UserModel userModel = Provider.of<UserModel>(context, listen: false);
+      trip.origin = (await userModel.getStartNominatimPlace(
+              trip.originLat!, trip.originLon!))
+          .displayName;
       PostMatchResponse matchResponse =
-          await Provider.of<UserModel>(context, listen: false)
-              .postMatch(widget.role, trip);
+          await userModel.postMatch(widget.role, trip);
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => MatchesPage(
           matchResponse: matchResponse,

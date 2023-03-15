@@ -1,5 +1,11 @@
+import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
+import 'package:car_pooling/viewmodel/user_model.dart';
+import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'trip_detail_page.dart';
 
 class MatchesTripsPage extends StatefulWidget {
   final Role role;
@@ -20,6 +26,8 @@ class _MatchesTripsPageState extends State<MatchesTripsPage> {
 
   bool isProgress = false;
 
+  SizedBox sizedBox = const SizedBox(height: 5);
+
   @override
   void initState() {
     super.initState();
@@ -36,26 +44,88 @@ class _MatchesTripsPageState extends State<MatchesTripsPage> {
             : "Available Drivers"),
         centerTitle: true,
       ),
-      body: trips.isNotEmpty
-          ? ListView.builder(
-              itemCount: trips.length,
-              itemBuilder: (context, index) {
-                Trip trip = trips[index];
-                return Column(
-                  children: [Text(trip.destination!)],
-                );
-              })
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: Text(
-                    "Sorry, no passenger available yet.",
-                    style: textStyle,
-                  ),
-                )
-              ],
-            ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+        child: trips.isNotEmpty
+            ? ListView.builder(
+                itemCount: trips.length,
+                itemBuilder: (context, index) {
+                  Trip trip = trips[index];
+                  return Column(
+                    children: [
+                      Text(
+                        trip.destination!,
+                        style: textStyle.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      sizedBox,
+                      Text(
+                        "From: ${trip.origin}",
+                        style: textStyle,
+                      ),
+                      sizedBox,
+                      Text(
+                        "Username: ${trip.username}",
+                        style: textStyle,
+                      ),
+                      sizedBox,
+                      Text(
+                        "Match Rate: ${trip.matchRate}",
+                        style: textStyle,
+                      ),
+                      sizedBox,
+                      ProgressElevatedButton(
+                          isProgress: isProgress,
+                          text: "Accept match",
+                          onPressed: () {
+                            acceptMatch(trip.id!);
+                          }),
+                      sizedBox,
+                      const Divider(
+                        height: 1,
+                        color: Colors.grey,
+                      )
+                    ],
+                  );
+                })
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      "Sorry, no passenger available yet.",
+                      style: textStyle,
+                    ),
+                  )
+                ],
+              ),
+      ),
     ));
+  }
+
+  Future acceptMatch(String matchId) async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      GetMatchResponse getMatchResponse =
+          await Provider.of<UserModel>(context, listen: false)
+              .getMatch(widget.role, widget.tripId, matchId);
+
+      setState(() {
+        isProgress = false;
+      });
+
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            TripDetailPage(getMatchResponse: getMatchResponse),
+      ));
+    } catch (e) {
+      print("Hata: $e");
+
+      setState(() {
+        isProgress = false;
+      });
+    }
   }
 }

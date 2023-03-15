@@ -119,17 +119,22 @@ class _MatchesPageState extends State<MatchesPage> {
       GetMatchResponse getMatchResponse =
           await Provider.of<UserModel>(context, listen: false)
               .getMatch(widget.role, matchResponse.newTripId!, matchId);
+
+      setState(() {
+        isProgress = false;
+      });
+
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             TripDetailPage(getMatchResponse: getMatchResponse),
       ));
     } catch (e) {
       print("Hata: $e");
-    }
 
-    setState(() {
-      isProgress = false;
-    });
+      setState(() {
+        isProgress = false;
+      });
+    }
   }
 
   Future endRide() async {
