@@ -64,6 +64,12 @@ def trip_detail(user_id, trip_id):
     return {"trip": trip.to_dict(), "matched": matched, "matches": matches}
 
 
+@app.get("/end-trip/{trip_id}")
+def end_trip(trip_id):
+    update_trip(firestore.client().collection(u'Trips'),
+                trip_id, {u'status': Status.inactive})
+
+
 def cancel_former_trips(trips_col_ref, user_id):
     trips = trips_col_ref.where(u'user_id', u'==', f'{user_id}').where(
         u'status', u'==', Status.active).stream()

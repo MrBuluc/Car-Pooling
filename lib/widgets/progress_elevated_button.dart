@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class ProgressElevatedButton extends StatefulWidget {
   final bool isProgress;
   final String text;
+  final Color? backgroundColor;
   final void Function() onPressed;
   const ProgressElevatedButton(
       {Key? key,
       required this.isProgress,
       required this.text,
+      this.backgroundColor,
       required this.onPressed})
       : super(key: key);
 
@@ -19,9 +21,13 @@ class _ProgressElevatedButtonState extends State<ProgressElevatedButton> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      style: ElevatedButton.styleFrom(backgroundColor: widget.backgroundColor),
       child: widget.isProgress
           ? const CircularProgressIndicator()
-          : Text(widget.text),
+          : Text(
+              widget.text,
+              style: const TextStyle(fontSize: 20),
+            ),
       onPressed: () {
         if (!widget.isProgress) {
           widget.onPressed();

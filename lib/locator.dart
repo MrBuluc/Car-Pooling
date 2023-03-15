@@ -1,4 +1,5 @@
 import 'package:car_pooling/repository/user_repository.dart';
+import 'package:car_pooling/services/api_services/end_trip_api.dart';
 import 'package:car_pooling/services/api_services/match_api.dart';
 import 'package:get_it/get_it.dart';
 
@@ -10,4 +11,5 @@ setupLocator() {
   locator.registerLazySingleton(() => UserRepository());
   locator.registerLazySingleton(() => NominatimApi());
   locator.registerLazySingleton(() => MatchApi());
+  locator.registerLazySingleton(() => EndTripApi());
 }

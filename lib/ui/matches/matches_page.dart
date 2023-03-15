@@ -37,56 +37,75 @@ class _MatchesPageState extends State<MatchesPage> {
         child: Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-        child: matchResponse.result.isNotEmpty
-            ? ListView.builder(
-                itemCount: matchResponse.result.length,
-                itemBuilder: (context, index) {
-                  Trip matchedTrip = matchResponse.result[index];
-                  return Column(
+        child: Column(
+          children: [
+            matchResponse.result.isNotEmpty
+                ? ListView.builder(
+                    itemCount: matchResponse.result.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      Trip matchedTrip = matchResponse.result[index];
+                      return Column(
+                        children: [
+                          Text(
+                            "Username: ${matchedTrip.username}",
+                            style: textStyle,
+                          ),
+                          Text(
+                            "Destination: ${matchedTrip.destination}",
+                            style: textStyle,
+                          ),
+                          Text(
+                            "Origin: ${matchedTrip.origin}",
+                            style: textStyle,
+                          ),
+                          Text(
+                            "Match rate: ${matchedTrip.matchRate}%",
+                            style: textStyle,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ProgressElevatedButton(
+                              isProgress: isProgress,
+                              text: "Accept match",
+                              onPressed: () {
+                                acceptMatch(matchedTrip.id!);
+                              }),
+                          const Divider(
+                            height: 1,
+                            color: Colors.grey,
+                          )
+                        ],
+                      );
+                    },
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Username: ${matchedTrip.username}",
+                      Center(
+                          child: Text(
+                        "No match found!",
                         style: textStyle,
-                      ),
-                      Text(
-                        "Destination: ${matchedTrip.destination}",
-                        style: textStyle,
-                      ),
-                      Text(
-                        "Origin: ${matchedTrip.origin}",
-                        style: textStyle,
-                      ),
-                      Text(
-                        "Match rate: ${matchedTrip.matchRate}%",
-                        style: textStyle,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ProgressElevatedButton(
-                          isProgress: isProgress,
-                          text: "Accept match",
-                          onPressed: () {
-                            acceptMatch(matchedTrip.id!);
-                          }),
-                      const Divider(
-                        height: 1,
-                        color: Colors.grey,
-                      )
+                      ))
                     ],
-                  );
-                },
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                      child: Text(
-                    "No match found!",
-                    style: textStyle,
-                  ))
-                ],
-              ),
+                  ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ProgressElevatedButton(
+                  isProgress: isProgress,
+                  text: "End Ride",
+                  backgroundColor: Colors.red,
+                  onPressed: endRide,
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     ));
   }
@@ -111,5 +130,22 @@ class _MatchesPageState extends State<MatchesPage> {
     setState(() {
       isProgress = false;
     });
+  }
+
+  Future endRide() async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      bool result = await Provider.of<UserModel>(context, listen: false)
+          .endTrip(matchResponse.newTripId!);
+      if (result) {
+        int count = 0;
+        Navigator.popUntil(context, (route) => count++ == 2);
+      }
+    } catch (e) {
+      print("Hata: $e");
+    }
   }
 }
