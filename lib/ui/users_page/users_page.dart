@@ -29,7 +29,7 @@ class _UsersPageState extends State<UsersPage> {
                     style: textStyle,
                   ),
                   onPressed: () {
-                    goToPage("KGd2I6yOP8Vo6hwU6gj7DuvuZpO2");
+                    goToPage("KGd2I6yOP8Vo6hwU6gj7DuvuZpO2", "Hakkıcan Bülüç");
                   },
                 ),
                 ElevatedButton(
@@ -38,7 +38,8 @@ class _UsersPageState extends State<UsersPage> {
                     style: textStyle,
                   ),
                   onPressed: () {
-                    goToPage("G3mevApBThgNDz7Nq0EuuQhVMjz1");
+                    goToPage(
+                        "G3mevApBThgNDz7Nq0EuuQhVMjz1", "beratcan Duğancı");
                   },
                 )
               ],
@@ -49,7 +50,7 @@ class _UsersPageState extends State<UsersPage> {
             ElevatedButton(
               child: Text("süleyman", style: textStyle),
               onPressed: () {
-                goToPage("EC2mQSpeZPckbi6GTvVaqMcaKmZ2");
+                goToPage("EC2mQSpeZPckbi6GTvVaqMcaKmZ2", "süleyman ismail");
               },
             )
           ],
@@ -58,8 +59,10 @@ class _UsersPageState extends State<UsersPage> {
     );
   }
 
-  goToPage(String userId) {
-    Provider.of<UserModel>(context, listen: false).userId = userId;
+  goToPage(String userId, String username) {
+    UserModel userModel = Provider.of<UserModel>(context, listen: false);
+    userModel.userId = userId;
+    userModel.username = username;
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const HomePage(),
     ));

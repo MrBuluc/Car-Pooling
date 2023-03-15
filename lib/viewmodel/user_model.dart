@@ -9,7 +9,7 @@ import '../models/nominatim_place.dart';
 
 class UserModel with ChangeNotifier {
   final UserRepository _userRepository = locator<UserRepository>();
-  String? userId;
+  String? userId, username;
 
   Future<List<NominatimPlace>> getNominatimPlaces(String search, double west,
       double south, double east, double north) async {
@@ -34,7 +34,7 @@ class UserModel with ChangeNotifier {
   Future<PostMatchResponse> postMatch(Role role, Trip trip) async {
     try {
       trip.userId = userId;
-      trip.driver = role == Role.driver ? "Hakkıcan Bülüç" : null;
+      trip.driver = role == Role.driver ? username : null;
       return await _userRepository.postMatch(role, trip);
     } catch (e) {
       printError("postMatch", e);
