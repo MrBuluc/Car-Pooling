@@ -29,7 +29,7 @@ class MatchApi {
 
   Future<GetMatchResponse> getMatch(
       Role role, String userId, String tripId, String matchId) async {
-    Uri uri = API(port: 8000, path: "match/${role.name}", queryParameters: {
+    Uri uri = API(port: 8000, path: "match/driver", queryParameters: {
       "user_id": userId,
       "trip_id": tripId,
       "match_id": matchId

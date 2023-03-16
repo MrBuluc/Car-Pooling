@@ -38,13 +38,17 @@ def post_match_driver(body: str = Body()):
     matches = find_matches(trips_col_ref, Role.driver, trip.route)
     return {"result": matches, "id": trip.id}
 
+
 @app.get("/match/driver")
 def match_driver(user_id, trip_id, match_id):
     trips_col_ref = firestore.client().collection(u'Trips')
+    match = get_trip(trips_col_ref, match_id)
     update_trip(trips_col_ref, match_id, {
                 u'matches': ArrayUnion([f'{trip_id}'])})
     update_trip(trips_col_ref, trip_id, {
                 u'matches': ArrayUnion([f'{match_id}'])})
+    if match.role == Role.driver:
+        update_trip(trips_col_ref, trip_id, {u'driver': f'{match.driver}'})
     return trip_detail(user_id, trip_id)
 
 
@@ -63,16 +67,24 @@ def trip_detail(user_id, trip_id):
                 mtrip = get_trip(trips_col_ref, match_id)
                 mtrip.username = get_username(mtrip.user_id)
                 matched.append(mtrip)
-        if trip.status == Status.active:
-            for mtrip_dict in trips:
-                mtrip = Trip.from_dict(mtrip_dict.to_dict())
-                if check_trip_in_trips(matched, mtrip.id) == False:
-                    match_rate = match_routes(trip.route, mtrip.route)
-                    if match_rate >= min_match_rate:
-                        mtrip.match_rate = match_rate * 100
-                        mtrip.username = get_username(mtrip.user_id)
-                        matches.append(mtrip)
-    # else:
+    else:
+        trips = trips_col_ref.where(u'role', u'==', Role.driver).where(
+            u'status', u'==', Status.active).where(u'user_id', u'!=', f'{user_id}').stream()
+        if trip.matches:
+            mtrip = get_trip(trips_col_ref, trip.matches[0])
+            mtrip.username = get_username(mtrip.user_id)
+            matched.append(mtrip)
+
+    if trip.status == Status.active:
+        for mtrip_dict in trips:
+            mtrip = Trip.from_dict(mtrip_dict.to_dict())
+            if check_trip_in_trips(matched, mtrip.id) == False:
+                match_rate = match_routes(trip.route, mtrip.route)
+                if match_rate >= min_match_rate:
+                    mtrip.match_rate = match_rate * 100
+                    mtrip.username = get_username(mtrip.user_id)
+                    matches.append(mtrip)
+
     return {"trip": trip.to_dict(), "matched": matched, "matches": matches}
 
 

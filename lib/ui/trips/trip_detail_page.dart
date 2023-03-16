@@ -163,7 +163,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
         buildTripInfoRow("Date: ", trip.createdAtToString()),
         buildTripInfoRow("Destination: ", trip.destination!),
         buildTripInfoRow("From: ", trip.origin!),
-        buildTripInfoRow("Driver's name: ", trip.driver!),
+        buildTripInfoRow("Driver's name: ", trip.driver.toString()),
         buildTripInfoRow("Role: ", trip.role!.name),
         buildTripInfoRow("Status: ", trip.status!.name)
       ];
