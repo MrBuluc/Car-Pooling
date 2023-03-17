@@ -6,7 +6,7 @@ import uvicorn
 from models import Status, Trip, Role
 from utils import match_routes
 from typing import List
-from google.cloud.firestore import GeoPoint, ArrayUnion
+from google.cloud.firestore import GeoPoint, ArrayUnion, Query
 import json
 
 app = FastAPI()
@@ -92,6 +92,19 @@ def trip_detail(user_id, trip_id):
 def end_trip(trip_id):
     update_trip(firestore.client().collection(u'Trips'),
                 trip_id, {u'status': Status.inactive})
+
+
+@app.get("/trips/{user_id}")
+def trips(user_id):
+    trips_list = []
+    trips_stream = firestore.client().collection(u'Trips').where(
+        u'user_id', u'==', f'{user_id}').order_by(u'created_at',
+                                                  direction=Query.DESCENDING).stream()
+    for trip_dict in trips_stream:
+        trip = Trip.from_dict(trip_dict.to_dict())
+        trips_list.append({"id": trip.id, "destination": trip.destination, "origin": trip.origin,
+                          "status": trip.status, "driver": trip.driver, "created_at": trip.created_at})
+    return {"trips": trips_list}
 
 
 def cancel_former_trips(trips_col_ref, user_id):

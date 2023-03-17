@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => UserModel(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: true,
         title: 'Car Pooling',
         theme: ThemeData(
           primarySwatch: Colors.blue,

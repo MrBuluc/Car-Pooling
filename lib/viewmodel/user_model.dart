@@ -61,6 +61,15 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  Future<List<Trip>> getMyTrips() async {
+    try {
+      return await _userRepository.getMyTrips(userId!);
+    } catch (e) {
+      printError("getMyTrips", e);
+      rethrow;
+    }
+  }
+
   printError(String funcName, Object e) {
     print("Usermodel $funcName hata: $e");
   }
