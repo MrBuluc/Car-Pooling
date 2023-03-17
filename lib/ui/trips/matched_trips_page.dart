@@ -29,7 +29,7 @@ class _MatchedTripsPageState extends State<MatchedTripsPage> {
       appBar: AppBar(
         title: Text(widget.role == Role.driver
             ? "Matched Passengers"
-            : "Matched Drivers"),
+            : "Matched Driver"),
         centerTitle: true,
       ),
       body: Padding(
