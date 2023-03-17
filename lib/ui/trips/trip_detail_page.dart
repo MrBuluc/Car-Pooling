@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/map_is_loading.dart';
+
 class TripDetailPage extends StatefulWidget {
   final GetMatchResponse getMatchResponse;
   const TripDetailPage({Key? key, required this.getMatchResponse})
@@ -19,7 +21,7 @@ class TripDetailPage extends StatefulWidget {
 }
 
 class _TripDetailPageState extends State<TripDetailPage> {
-  double west = 30.8203, south = 38.6769, east = 33.8558, north = 40.7537;
+  double west = 27.045, south = 35.93, east = 29.87, north = 37.928;
 
   late Size size;
 
@@ -60,8 +62,8 @@ class _TripDetailPageState extends State<TripDetailPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            /*SizedBox(
-              height: size.height * .8,
+            SizedBox(
+              height: size.height * .46,
               child: OSMFlutter(
                 controller: mapController,
                 trackMyPosition: trip.status! == Status.active,
@@ -71,16 +73,14 @@ class _TripDetailPageState extends State<TripDetailPage> {
                 userLocationMarker: UserLocationMaker(
                     personMarker: userLocationMarker,
                     directionArrowMarker: userLocationMarker),
-                onMapIsReady: (ready) async {
-                  await onMapIsReady(ready);
-                },
+                onMapIsReady: onMapIsReady,
                 mapIsLoading: const MapIsLoading(),
               ),
-            ),*/
-            Container(
+            ),
+            /*Container(
               height: size.height * .8,
               color: Colors.red,
-            ),
+            ),*/
             const SizedBox(
               height: 10,
             ),
