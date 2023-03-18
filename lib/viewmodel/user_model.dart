@@ -70,6 +70,15 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  Future<GetMatchResponse> getTripDetail(String tripId) async {
+    try {
+      return await _userRepository.getTripDetail(userId!, tripId);
+    } catch (e) {
+      printError("getTripDetail", e);
+      rethrow;
+    }
+  }
+
   printError(String funcName, Object e) {
     print("Usermodel $funcName hata: $e");
   }
