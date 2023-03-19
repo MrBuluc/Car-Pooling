@@ -10,7 +10,9 @@ import '../../models/trip.dart';
 
 class MatchesPage extends StatefulWidget {
   final PostMatchResponse matchResponse;
-  const MatchesPage({Key? key, required this.matchResponse}) : super(key: key);
+  final Role role;
+  const MatchesPage({Key? key, required this.matchResponse, required this.role})
+      : super(key: key);
 
   @override
   State<MatchesPage> createState() => _MatchesPageState();
@@ -66,9 +68,11 @@ class _MatchesPageState extends State<MatchesPage> {
                           ),
                           ProgressElevatedButton(
                               isProgress: isProgress,
-                              text: "Accept match",
+                              text: widget.role == Role.driver
+                                  ? "Offer ride"
+                                  : "Request ride",
                               onPressed: () {
-                                acceptMatch(matchedTrip.id!);
+                                offerRide(matchedTrip.id!);
                               }),
                           const Divider(
                             height: 1,
@@ -108,7 +112,7 @@ class _MatchesPageState extends State<MatchesPage> {
     ));
   }
 
-  Future acceptMatch(String matchId) async {
+  Future offerRide(String matchId) async {
     setState(() {
       isProgress = true;
     });

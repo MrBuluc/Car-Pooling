@@ -5,3 +5,10 @@ goToPage(BuildContext context, Widget page) {
     builder: (context) => page,
   ));
 }
+
+TextStyle textStyle = const TextStyle(fontSize: 20);
+
+AppBar buildAppBar(String title) => AppBar(
+      title: Text(title),
+      centerTitle: true,
+    );

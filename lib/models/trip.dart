@@ -1,6 +1,6 @@
 enum Role { driver, passenger }
 
-enum Status { active, ended }
+enum Status { started, pending, ended }
 
 class Trip {
   String? id;
@@ -66,10 +66,12 @@ class Trip {
   }
 
   Status convertStringToStatus(String statusStr) {
-    if (statusStr == "active") {
-      return Status.active;
-    } else {
+    if (statusStr == "started") {
+      return Status.started;
+    } else if (statusStr == "ended") {
       return Status.ended;
+    } else {
+      return Status.pending;
     }
   }
 

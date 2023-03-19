@@ -67,7 +67,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
               height: size.height * .46,
               child: OSMFlutter(
                 controller: mapController,
-                trackMyPosition: trip.status! == Status.active,
+                trackMyPosition: trip.status! == Status.started,
                 maxZoomLevel: 18,
                 minZoomLevel: 8,
                 initZoom: 13,
@@ -107,7 +107,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
                         trips: widget.getMatchResponse.matched));
               },
             ),
-            trip.status! == Status.active
+            trip.status! == Status.started || trip.status! == Status.pending
                 ? ElevatedButton(
                     child: Text(
                       trip.role! == Role.driver
@@ -151,7 +151,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
       GeoPoint destinationGeoPoint = GeoPoint(
           latitude: double.parse(trip.destinationLat!),
           longitude: double.parse(trip.destinationLon!));
-      if (trip.status == Status.active) {
+      if (trip.status == Status.started) {
         GeoPoint myLocationGeoPoint = await mapController.myLocation();
         mapController.drawRoad(myLocationGeoPoint, destinationGeoPoint,
             roadOption: const RoadOption(roadColor: Colors.red, roadWidth: 10));
