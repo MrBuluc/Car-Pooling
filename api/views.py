@@ -18,7 +18,7 @@ def root():
 
 
 @app.post("/match/passenger")
-def match_passenger(body: str = Body()):
+def post_match_passenger(body: str = Body()):
     trip = Trip.from_dict(json.loads(body))
     trip.role = Role.driver
     trips_col_ref = firestore.client().collection(u'Trips')
@@ -39,8 +39,8 @@ def post_match_driver(body: str = Body()):
     return {"result": matches, "id": trip.id}
 
 
-@app.get("/match/driver")
-def match_driver(user_id, trip_id, match_id):
+@app.get("/match")
+def match(user_id, trip_id, match_id):
     trips_col_ref = firestore.client().collection(u'Trips')
     match = get_trip(trips_col_ref, match_id)
     update_trip(trips_col_ref, match_id, {

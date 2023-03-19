@@ -42,10 +42,9 @@ class UserModel with ChangeNotifier {
     }
   }
 
-  Future<GetMatchResponse> getMatch(
-      Role role, String tripId, String matchId) async {
+  Future<GetMatchResponse> getMatch(String tripId, String matchId) async {
     try {
-      return await _userRepository.getMatch(role, userId!, tripId, matchId);
+      return await _userRepository.getMatch(userId!, tripId, matchId);
     } catch (e) {
       printError("getMatch", e);
       rethrow;

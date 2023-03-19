@@ -217,10 +217,7 @@ class _PoolPageState extends State<PoolPage> {
       PostMatchResponse matchResponse =
           await userModel.postMatch(widget.role, trip);
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => MatchesPage(
-          matchResponse: matchResponse,
-          role: widget.role,
-        ),
+        builder: (context) => MatchesPage(matchResponse: matchResponse),
       ));
     } catch (e) {
       print("Hata: $e");

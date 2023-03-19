@@ -30,8 +30,8 @@ class UserRepository {
   }
 
   Future<GetMatchResponse> getMatch(
-      Role role, String userId, String tripId, String matchId) async {
-    return await _matchApi.getMatch(role, userId, tripId, matchId);
+      String userId, String tripId, String matchId) async {
+    return await _matchApi.getMatch(userId, tripId, matchId);
   }
 
   Future<bool> endTrip(String tripId) async {

@@ -110,7 +110,7 @@ class _MatchesTripsPageState extends State<MatchesTripsPage> {
     try {
       GetMatchResponse getMatchResponse =
           await Provider.of<UserModel>(context, listen: false)
-              .getMatch(widget.role, widget.tripId, matchId);
+              .getMatch(widget.tripId, matchId);
 
       setState(() {
         isProgress = false;

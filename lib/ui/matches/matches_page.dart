@@ -10,9 +10,7 @@ import '../../models/trip.dart';
 
 class MatchesPage extends StatefulWidget {
   final PostMatchResponse matchResponse;
-  final Role role;
-  const MatchesPage({Key? key, required this.matchResponse, required this.role})
-      : super(key: key);
+  const MatchesPage({Key? key, required this.matchResponse}) : super(key: key);
 
   @override
   State<MatchesPage> createState() => _MatchesPageState();
@@ -118,7 +116,7 @@ class _MatchesPageState extends State<MatchesPage> {
     try {
       GetMatchResponse getMatchResponse =
           await Provider.of<UserModel>(context, listen: false)
-              .getMatch(widget.role, matchResponse.newTripId!, matchId);
+              .getMatch(matchResponse.newTripId!, matchId);
 
       setState(() {
         isProgress = false;
