@@ -4,13 +4,15 @@ class ProgressElevatedButton extends StatefulWidget {
   final bool isProgress;
   final String text;
   final Color? backgroundColor;
+  final Color? circularProgressIndicatorColor;
   final void Function() onPressed;
   const ProgressElevatedButton(
       {Key? key,
       required this.isProgress,
       required this.text,
       this.backgroundColor,
-      required this.onPressed})
+      required this.onPressed,
+      this.circularProgressIndicatorColor})
       : super(key: key);
 
   @override
@@ -23,7 +25,9 @@ class _ProgressElevatedButtonState extends State<ProgressElevatedButton> {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: widget.backgroundColor),
       child: widget.isProgress
-          ? const CircularProgressIndicator()
+          ? CircularProgressIndicator(
+              color: widget.circularProgressIndicatorColor,
+            )
           : Text(
               widget.text,
               style: const TextStyle(fontSize: 20),

@@ -40,8 +40,12 @@ class Trip {
     origin = json["origin"];
     originLat = json["origin_lat"];
     originLon = json["origin_lon"];
-    destinationLat = json["destination_lat"];
-    destinationLon = json["destination_lon"];
+    destinationLat = json["destination_lat"] is double
+        ? (json["destination_lat"] as double).toString()
+        : json["destination_lat"];
+    destinationLon = json["destination_lon"] is double
+        ? (json["destination_lon"] as double).toString()
+        : json["destination_lon"];
     username = json["username"];
     driver = json["driver"];
     matchRate = json["match_rate"];

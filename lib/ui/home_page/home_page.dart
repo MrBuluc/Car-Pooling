@@ -24,7 +24,11 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         actions: [
           ProgressElevatedButton(
-              isProgress: isProgress, text: "My Trips", onPressed: getMyTrips)
+            isProgress: isProgress,
+            text: "My Trips",
+            onPressed: getMyTrips,
+            circularProgressIndicatorColor: Colors.black,
+          )
         ],
       ),
       body: Center(

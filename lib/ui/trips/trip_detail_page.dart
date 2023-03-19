@@ -10,6 +10,7 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/map_is_loading.dart';
+import '../const.dart';
 
 class TripDetailPage extends StatefulWidget {
   final GetMatchResponse getMatchResponse;
@@ -99,8 +100,11 @@ class _TripDetailPageState extends State<TripDetailPage> {
                 style: buttonTextStyle,
               ),
               onPressed: () {
-                goToPage(MatchedTripsPage(
-                    role: trip.role!, trips: widget.getMatchResponse.matched));
+                goToPage(
+                    context,
+                    MatchedTripsPage(
+                        role: trip.role!,
+                        trips: widget.getMatchResponse.matched));
               },
             ),
             trip.status! == Status.active
@@ -112,10 +116,12 @@ class _TripDetailPageState extends State<TripDetailPage> {
                       style: buttonTextStyle,
                     ),
                     onPressed: () {
-                      goToPage(MatchesTripsPage(
-                          role: trip.role!,
-                          trips: widget.getMatchResponse.matches,
-                          tripId: trip.id!));
+                      goToPage(
+                          context,
+                          MatchesTripsPage(
+                              role: trip.role!,
+                              trips: widget.getMatchResponse.matches,
+                              tripId: trip.id!));
                     },
                   )
                 : Container(),
@@ -183,12 +189,6 @@ class _TripDetailPageState extends State<TripDetailPage> {
         )
       ],
     );
-  }
-
-  goToPage(Widget page) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => page,
-    ));
   }
 
   Future endRide() async {

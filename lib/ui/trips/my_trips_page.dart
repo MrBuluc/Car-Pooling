@@ -1,5 +1,11 @@
+import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
+import 'package:car_pooling/ui/const.dart';
+import 'package:car_pooling/ui/trips/trip_detail_page.dart';
+import 'package:car_pooling/viewmodel/user_model.dart';
+import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyTripsPage extends StatefulWidget {
   final List<Trip> myTrips;
@@ -17,6 +23,8 @@ class _MyTripsPageState extends State<MyTripsPage> {
   SizedBox sizedBox = const SizedBox(
     height: 5,
   );
+
+  bool isProgress = false;
 
   @override
   void initState() {
@@ -38,8 +46,7 @@ class _MyTripsPageState extends State<MyTripsPage> {
               itemCount: myTrips.length,
               itemBuilder: (BuildContext context, int index) {
                 Trip trip = myTrips[index];
-                return GestureDetector(
-                    child: Card(
+                return Card(
                   color: Colors.grey.shade200,
                   child: Column(
                     children: [
@@ -79,13 +86,38 @@ class _MyTripsPageState extends State<MyTripsPage> {
                       Text(
                         "Date: ${trip.createdAtToString()}",
                         style: textStyle,
-                      )
+                      ),
+                      ProgressElevatedButton(
+                          isProgress: isProgress,
+                          text: "Go to Trip Detail Page",
+                          onPressed: () {
+                            goToTripDetailPage(trip.id!);
+                          })
                     ],
                   ),
-                ));
+                );
               }),
         ),
       ),
     );
+  }
+
+  Future goToTripDetailPage(String tripId) async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      GetMatchResponse getMatchResponse =
+          await Provider.of<UserModel>(context, listen: false)
+              .getTripDetail(tripId);
+      goToPage(context, TripDetailPage(getMatchResponse: getMatchResponse));
+
+      setState(() {
+        isProgress = false;
+      });
+    } catch (e) {
+      print("Hata: $e");
+    }
   }
 }
