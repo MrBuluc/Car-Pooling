@@ -153,7 +153,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
           longitude: double.parse(trip.destinationLon!));
       if (trip.status == Status.active) {
         GeoPoint myLocationGeoPoint = await mapController.myLocation();
-        await mapController.drawRoad(myLocationGeoPoint, destinationGeoPoint,
+        mapController.drawRoad(myLocationGeoPoint, destinationGeoPoint,
             roadOption: const RoadOption(roadColor: Colors.red, roadWidth: 10));
       } else {
         GeoPoint originGeoPoint =

@@ -111,11 +111,12 @@ class _MyTripsPageState extends State<MyTripsPage> {
       GetMatchResponse getMatchResponse =
           await Provider.of<UserModel>(context, listen: false)
               .getTripDetail(tripId);
-      goToPage(context, TripDetailPage(getMatchResponse: getMatchResponse));
 
       setState(() {
         isProgress = false;
       });
+
+      goToPage(context, TripDetailPage(getMatchResponse: getMatchResponse));
     } catch (e) {
       print("Hata: $e");
     }
