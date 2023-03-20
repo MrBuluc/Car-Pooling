@@ -35,6 +35,7 @@ class UserModel with ChangeNotifier {
     try {
       trip.userId = userId;
       trip.driver = role == Role.driver ? username : null;
+      trip.username = role == Role.passenger ? username : null;
       return await _userRepository.postMatch(role, trip);
     } catch (e) {
       printError("postMatch", e);

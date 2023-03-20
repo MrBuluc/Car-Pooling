@@ -1,5 +1,6 @@
 import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/match/post_match_response.dart';
+import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/ui/trips/trip_detail_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
@@ -72,7 +73,7 @@ class _MatchesPageState extends State<MatchesPage> {
                                   ? "Offer ride"
                                   : "Request ride",
                               onPressed: () {
-                                offerRide(matchedTrip.id!);
+                                offerOrRequestRide(matchedTrip.id!);
                               }),
                           const Divider(
                             height: 1,
@@ -112,7 +113,7 @@ class _MatchesPageState extends State<MatchesPage> {
     ));
   }
 
-  Future offerRide(String matchId) async {
+  Future offerOrRequestRide(String matchId) async {
     setState(() {
       isProgress = true;
     });
@@ -126,10 +127,7 @@ class _MatchesPageState extends State<MatchesPage> {
         isProgress = false;
       });
 
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            TripDetailPage(getMatchResponse: getMatchResponse),
-      ));
+      goToPage(context, TripDetailPage(getMatchResponse: getMatchResponse));
     } catch (e) {
       print("Hata: $e");
 

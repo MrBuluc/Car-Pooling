@@ -1,6 +1,8 @@
 import 'package:car_pooling/models/trip.dart';
 import 'package:flutter/material.dart';
 
+import '../const.dart';
+
 class MatchedTripsPage extends StatefulWidget {
   final Role role;
   final List<Trip> trips;
@@ -14,8 +16,6 @@ class MatchedTripsPage extends StatefulWidget {
 class _MatchedTripsPageState extends State<MatchedTripsPage> {
   late List<Trip> trips;
 
-  TextStyle textStyle = const TextStyle(fontSize: 20);
-
   @override
   void initState() {
     super.initState();
@@ -26,12 +26,8 @@ class _MatchedTripsPageState extends State<MatchedTripsPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(
-        title: Text(widget.role == Role.driver
-            ? "Matched Passengers"
-            : "Matched Driver"),
-        centerTitle: true,
-      ),
+      appBar: buildAppBar(
+          widget.role == Role.driver ? "Matched Passengers" : "Matched Driver"),
       body: Padding(
         padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
         child: ListView.builder(
@@ -40,6 +36,10 @@ class _MatchedTripsPageState extends State<MatchedTripsPage> {
               Trip trip = trips[index];
               return Column(
                 children: [
+                  Text(
+                    trip.destination!,
+                    style: textStyle.copyWith(fontWeight: FontWeight.bold),
+                  ),
                   Text(
                     "From: ${trip.origin!}",
                     style: textStyle,

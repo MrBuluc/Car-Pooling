@@ -6,7 +6,7 @@ import uvicorn
 from models import Status, Trip, Role
 from utils import match_routes
 from typing import List
-from google.cloud.firestore import GeoPoint, ArrayUnion, Query
+from google.cloud.firestore import GeoPoint, ArrayUnion, Query, ArrayRemove
 import json
 
 app = FastAPI()
@@ -53,6 +53,7 @@ def trip_detail(user_id, trip_id):
     trip = get_trip(trips_col_ref, trip_id)
     matched = []
     matches = []
+    requests = []
     min_match_rate = 0.4
     if trip.status == Status.started:
         if trip.role == Role.driver:
@@ -79,7 +80,10 @@ def trip_detail(user_id, trip_id):
                         mtrip.username = get_username(mtrip.user_id)
                         matches.append(mtrip)
 
-    return {"trip": trip.to_dict(), "matched": matched, "matches": matches}
+    for request_trip_id in trip.requests:
+        requests.append(get_trip(trips_col_ref, request_trip_id))
+
+    return {"trip": trip.to_dict(), "matched": matched, "matches": matches, "requests": requests}
 
 
 @app.get("/end-trip/{trip_id}")

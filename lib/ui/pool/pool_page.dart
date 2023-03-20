@@ -1,5 +1,6 @@
 import 'package:car_pooling/models/match/post_match_response.dart';
 import 'package:car_pooling/models/nominatim_place.dart';
+import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/ui/matches/matches_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/map_is_loading.dart';
@@ -216,12 +217,12 @@ class _PoolPageState extends State<PoolPage> {
           .displayName;
       PostMatchResponse matchResponse =
           await userModel.postMatch(widget.role, trip);
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => MatchesPage(
-          matchResponse: matchResponse,
-          role: widget.role,
-        ),
-      ));
+      goToPage(
+          context,
+          MatchesPage(
+            matchResponse: matchResponse,
+            role: widget.role,
+          ));
     } catch (e) {
       print("Hata: $e");
     }

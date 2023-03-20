@@ -1,7 +1,10 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/ui/trips/matched_trips_page.dart';
 import 'package:car_pooling/ui/trips/matches_trips_page.dart';
+import 'package:car_pooling/ui/trips/trip_requests_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -122,6 +125,20 @@ class _TripDetailPageState extends State<TripDetailPage> {
                               role: trip.role!,
                               trips: widget.getMatchResponse.matches,
                               tripId: trip.id!));
+                    },
+                  )
+                : Container(),
+            widget.getMatchResponse.requests.isNotEmpty
+                ? ElevatedButton(
+                    child: Text(
+                      "Requests",
+                      style: buttonTextStyle,
+                    ),
+                    onPressed: () {
+                      goToPage(
+                          context,
+                          TripsRequestPage(
+                              requests: widget.getMatchResponse.requests));
                     },
                   )
                 : Container(),

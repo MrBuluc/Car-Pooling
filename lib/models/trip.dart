@@ -84,6 +84,7 @@ class Trip {
         if (destinationLat != null) "destination_lat": destinationLat,
         if (destinationLon != null) "destination_lon": destinationLon,
         if (userId != null) "user_id": userId,
+        if (username != null) "username": username,
         if (driver != null) "driver": driver
       };
 
