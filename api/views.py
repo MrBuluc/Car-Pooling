@@ -105,6 +105,27 @@ def trips(user_id):
     return {"trips": trips_list}
 
 
+@app.get("/accept-trip")
+def accept_trip(user_id, trip_id, match_id):
+    trips_col_ref = firestore.client().collection(u'Trips')
+    trip = get_trip(trips_col_ref, trip_id)
+
+    if trip.role == Role.passenger:
+        update_trip(trips_col_ref, trip_id, {u'driver_trip_id': match_id})
+        update_trip(trips_col_ref, match_id, {
+                    u'passengers': ArrayUnion([f'{trip_id}'])})
+    else:
+        update_trip(trips_col_ref, trip_id, {
+                    u'passengers': ArrayUnion([f'{match_id}'])})
+        update_trip(trips_col_ref, match_id, {u'driver_trip_id': trip_id})
+
+    update_trip(trips_col_ref, trip_id, {
+                u'status': Status.started, u'requests': ArrayRemove([f'{match_id}'])})
+    update_trip(trips_col_ref, match_id, {u'status': Status.started})
+
+    return trip_detail(user_id, trip_id)
+
+
 def cancel_former_trips(trips_col_ref, user_id):
     trips = trips_col_ref.where(u'user_id', u'==', f'{user_id}').where(
         u'status', u'!=', Status.ended).stream()
