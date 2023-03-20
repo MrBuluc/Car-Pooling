@@ -42,16 +42,8 @@ def post_match_driver(body: str = Body()):
 @app.get("/match")
 def match(user_id, trip_id, match_id):
     trips_col_ref = firestore.client().collection(u'Trips')
-    match = get_trip(trips_col_ref, match_id)
-    if match.role == Role.driver:
-        update_trip(trips_col_ref, match_id, {
-            u'matches': ArrayUnion([f'{trip_id}'])})
-        update_trip(trips_col_ref, trip_id, {u'matches': [f'{match_id}']})
-        update_trip(trips_col_ref, trip_id, {u'driver': f'{match.driver}'})
-    else:
-        update_trip(trips_col_ref, match_id, {u'matches': [f'{trip_id}']})
-        update_trip(trips_col_ref, trip_id, {
-            u'matches': ArrayUnion([f'{match_id}'])})
+    update_trip(trips_col_ref, match_id, {
+        u'requests': ArrayUnion([f'{trip_id}'])})
     return trip_detail(user_id, trip_id)
 
 
@@ -111,7 +103,7 @@ def trips(user_id):
 
 def cancel_former_trips(trips_col_ref, user_id):
     trips = trips_col_ref.where(u'user_id', u'==', f'{user_id}').where(
-        u'status', u'==', Status.started).stream()
+        u'status', u'!=', Status.ended).stream()
 
     for trip_dict in trips:
         trip = Trip.from_dict(trip_dict.to_dict())
@@ -129,8 +121,12 @@ def save_trip(trips_col_ref, trip: Trip):
 def find_matches(trips_col_ref, role: Role, route: List[GeoPoint]):
     min_match_rate = 0.4
     matches = []
-    trips = trips_col_ref.where(u'role', u'==', f'{role}').where(
-        u'status', u'==', Status.started).stream()
+    if role == Role.driver:
+        trips = trips_col_ref.where(u'role', u'==', f'{role}').where(
+            u'status', u'!=', Status.ended).stream()
+    else:
+        trips = trips_col_ref.where(u'role', u'==', f'{role}').where(
+            u'status', u'==', Status.pending).stream()
 
     for tripDict in trips:
         trip = Trip.from_dict(tripDict.to_dict())
