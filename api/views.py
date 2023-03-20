@@ -43,12 +43,15 @@ def post_match_driver(body: str = Body()):
 def match(user_id, trip_id, match_id):
     trips_col_ref = firestore.client().collection(u'Trips')
     match = get_trip(trips_col_ref, match_id)
-    update_trip(trips_col_ref, match_id, {
-                u'matches': ArrayUnion([f'{trip_id}'])})
-    update_trip(trips_col_ref, trip_id, {
-                u'matches': ArrayUnion([f'{match_id}'])})
     if match.role == Role.driver:
+        update_trip(trips_col_ref, match_id, {
+            u'matches': ArrayUnion([f'{trip_id}'])})
+        update_trip(trips_col_ref, trip_id, {u'matches': [f'{match_id}']})
         update_trip(trips_col_ref, trip_id, {u'driver': f'{match.driver}'})
+    else:
+        update_trip(trips_col_ref, match_id, {u'matches': [f'{trip_id}']})
+        update_trip(trips_col_ref, trip_id, {
+            u'matches': ArrayUnion([f'{match_id}'])})
     return trip_detail(user_id, trip_id)
 
 
@@ -59,31 +62,30 @@ def trip_detail(user_id, trip_id):
     matched = []
     matches = []
     min_match_rate = 0.4
-    if trip.role == Role.driver:
-        trips = trips_col_ref.where(u'role', u'==', Role.passenger).where(
-            u'status', u'==', Status.active).where(u'user_id', u'!=', f'{user_id}').stream()
-        if trip.matches:
-            for match_id in trip.matches:
-                mtrip = get_trip(trips_col_ref, match_id)
-                mtrip.username = get_username(mtrip.user_id)
-                matched.append(mtrip)
-    else:
-        trips = trips_col_ref.where(u'role', u'==', Role.driver).where(
-            u'status', u'==', Status.active).where(u'user_id', u'!=', f'{user_id}').stream()
-        if trip.matches:
-            mtrip = get_trip(trips_col_ref, trip.matches[0])
-            mtrip.username = get_username(mtrip.user_id)
-            matched.append(mtrip)
+    if trip.status == Status.started:
+        if trip.role == Role.driver:
+            trips = trips_col_ref.where(u'role', u'==', Role.passenger).where(
+                u'status', u'==', Status.pending).where(u'user_id', u'!=', f'{user_id}').stream()
+            for passenger_trip_id in trip.passengers:
+                matched.append(get_trip(trips_col_ref, passenger_trip_id))
+        else:
+            trips = trips_col_ref.where(u'role', u'==', Role.driver).where(
+                u'status', u'!=', Status.ended).where(u'user_id', u'!=', f'{user_id}').stream()
+            if trip.driver_trip_id:
+                matched.append(get_trip(trips_col_ref, trip.driver_trip_id))
 
-    if trip.status == Status.active:
-        for mtrip_dict in trips:
-            mtrip = Trip.from_dict(mtrip_dict.to_dict())
-            if check_trip_in_trips(matched, mtrip.id) == False:
-                match_rate = match_routes(trip.route, mtrip.route)
-                if match_rate >= min_match_rate:
-                    mtrip.match_rate = match_rate * 100
-                    mtrip.username = get_username(mtrip.user_id)
-                    matches.append(mtrip)
+            for mtrip_dict in trips:
+                mtrip = Trip.from_dict(mtrip_dict.to_dict())
+                if trip.role == Role.passenger:
+                    flag = trip.driver_trip_id != mtrip.id
+                else:
+                    flag = mtrip.id not in trip.passengers and mtrip.id not in trip.requests
+                if flag:
+                    match_rate = match_routes(trip.route, mtrip.route)
+                    if match_rate >= min_match_rate:
+                        mtrip.match_rate = match_rate * 100
+                        mtrip.username = get_username(mtrip.user_id)
+                        matches.append(mtrip)
 
     return {"trip": trip.to_dict(), "matched": matched, "matches": matches}
 
@@ -91,7 +93,7 @@ def trip_detail(user_id, trip_id):
 @app.get("/end-trip/{trip_id}")
 def end_trip(trip_id):
     update_trip(firestore.client().collection(u'Trips'),
-                trip_id, {u'status': Status.inactive})
+                trip_id, {u'status': Status.ended})
 
 
 @app.get("/trips/{user_id}")
@@ -109,11 +111,11 @@ def trips(user_id):
 
 def cancel_former_trips(trips_col_ref, user_id):
     trips = trips_col_ref.where(u'user_id', u'==', f'{user_id}').where(
-        u'status', u'==', Status.active).stream()
+        u'status', u'==', Status.started).stream()
 
     for trip_dict in trips:
         trip = Trip.from_dict(trip_dict.to_dict())
-        update_trip(trips_col_ref, trip.id, {u'status': Status.inactive})
+        update_trip(trips_col_ref, trip.id, {u'status': Status.ended})
 
 
 def update_trip(trips_col_ref, id, update_fields):
@@ -128,7 +130,7 @@ def find_matches(trips_col_ref, role: Role, route: List[GeoPoint]):
     min_match_rate = 0.4
     matches = []
     trips = trips_col_ref.where(u'role', u'==', f'{role}').where(
-        u'status', u'==', Status.active).stream()
+        u'status', u'==', Status.started).stream()
 
     for tripDict in trips:
         trip = Trip.from_dict(tripDict.to_dict())
@@ -154,13 +156,6 @@ def get_username(id):
     if u'surname' in user_dict:
         username += " " + user_dict[u'surname']
     return username
-
-
-def check_trip_in_trips(trips: list[Trip], trip_id):
-    for trip in trips:
-        if trip.id == trip_id:
-            return True
-    return False
 
 
 def initializeFirebase():

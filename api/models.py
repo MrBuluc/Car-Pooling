@@ -13,15 +13,17 @@ class Role(str, Enum):
 
 
 class Status(str, Enum):
-    active = "active"
-    inactive = "ended"
+    started = "started"
+    pending = "pending"
+    ended = "ended"
 
 
 class Trip(object):
     def __init__(self, id=str(uuid4()), created_at=datetime.now(pytz.timezone("Asia/Istanbul")),
-                 status=Status.active, destination="", route=[], origin="", origin_lat=0,
+                 status=Status.pending, destination="", route=[], origin="", origin_lat=0,
                  origin_lon=0, destination_lat=0, destination_lon=0, user_id="", username="",
-                 driver="", match_rate=0.0, role="", matches=[]):
+                 driver="", match_rate=0.0, role="", passengers=[],
+                 driver_trip_id="", requests=[]):
         self.id = id
         self.destination = destination
         self.route = route
@@ -37,7 +39,9 @@ class Trip(object):
         self.created_at = created_at
         self.role = role
         self.status = status
-        self.matches = matches
+        self.passengers = passengers
+        self.driver_trip_id = driver_trip_id
+        self.requests = requests
 
     @staticmethod
     def from_dict(source):
@@ -90,8 +94,12 @@ class Trip(object):
             trip.role = source[u'role']
         if u'status' in source:
             trip.status = source[u'status']
-        if u'matches' in source:
-            trip.matches = source[u'matches']
+        if u'passengers' in source:
+            trip.passengers = source[u'passengers']
+        if u'driver_trip_id' in source:
+            trip.driver_trip_id = source[u'driver_trip_id']
+        if u'requests' in source:
+            trip.requests = source[u'requests']
 
         return trip
 
@@ -128,8 +136,12 @@ class Trip(object):
             dest[u'role'] = self.role
         if self.status:
             dest[u'status'] = self.status
-        if self.matches:
-            dest[u'matches'] = self.matches
+        if self.passengers:
+            dest[u'passengers'] = self.passengers
+        if self.driver_trip_id:
+            dest[u'driver_trip_id'] = self.driver_trip_id
+        if self.requests:
+            dest[u'requests'] = self.requests
 
         return dest
 
@@ -140,4 +152,5 @@ class Trip(object):
                 f'destination_lon={self.destination_lon}, user_id={self.user_id}, ' +
                 f'username={self.username}, driver={self.driver}, match_rate={self.match_rate}, ' +
                 f'created_at={self.created_at}, role={self.role}, status={self.status}, ' +
-                f'matches={self.matches})')
+                f'passengers={self.passengers}, ' +
+                f'driver_trip_id={self.driver_trip_id}, requests={self.requests})')

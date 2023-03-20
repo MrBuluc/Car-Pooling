@@ -75,9 +75,11 @@ class _MatchesTripsPageState extends State<MatchesTripsPage> {
                       sizedBox,
                       ProgressElevatedButton(
                           isProgress: isProgress,
-                          text: "Accept match",
+                          text: widget.role == Role.passenger
+                              ? "Request ride"
+                              : "Offer ride",
                           onPressed: () {
-                            acceptMatch(trip.id!);
+                            requestOrOfferRide(trip.id!);
                           }),
                       sizedBox,
                       const Divider(
@@ -92,7 +94,9 @@ class _MatchesTripsPageState extends State<MatchesTripsPage> {
                 children: [
                   Center(
                     child: Text(
-                      "Sorry, no passenger available yet.",
+                      widget.role == Role.driver
+                          ? "Sorry, no passenger available yet."
+                          : "Sorry, no driver available yet.",
                       style: textStyle,
                     ),
                   )
@@ -102,7 +106,7 @@ class _MatchesTripsPageState extends State<MatchesTripsPage> {
     ));
   }
 
-  Future acceptMatch(String matchId) async {
+  Future requestOrOfferRide(String matchId) async {
     setState(() {
       isProgress = true;
     });
