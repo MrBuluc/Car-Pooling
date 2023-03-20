@@ -63,12 +63,14 @@ def trip_detail(user_id, trip_id):
                 matched.append(get_trip(trips_col_ref, passenger_trip_id))
         else:
             trips = trips_col_ref.where(u'role', u'==', Role.driver).where(
-                u'status', u'!=', Status.ended).where(u'user_id', u'!=', f'{user_id}').stream()
+                u'status', u'!=', Status.ended).stream()
             if trip.driver_trip_id:
                 matched.append(get_trip(trips_col_ref, trip.driver_trip_id))
 
-            for mtrip_dict in trips:
-                mtrip = Trip.from_dict(mtrip_dict.to_dict())
+        for mtrip_dict in trips:
+            mtrip = Trip.from_dict(mtrip_dict.to_dict())
+            if mtrip.user_id != user_id:
+
                 if trip.role == Role.passenger:
                     flag = trip.driver_trip_id != mtrip.id
                 else:
