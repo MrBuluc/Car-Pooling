@@ -45,4 +45,9 @@ class UserRepository {
   Future<GetMatchResponse> getTripDetail(String userId, String tripId) async {
     return await _tripsApi.getTripDetail(userId, tripId);
   }
+
+  Future<GetMatchResponse> acceptTrip(
+      String userId, String tripId, String matchId) async {
+    return await _matchApi.acceptTrip(userId, tripId, matchId);
+  }
 }

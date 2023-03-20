@@ -41,4 +41,19 @@ class MatchApi {
     }
     throw API.getError(uri, response);
   }
+
+  Future<GetMatchResponse> acceptTrip(
+      String userId, String tripId, String matchId) async {
+    Uri uri = API(port: 8000, path: "accept-trip", queryParameters: {
+      "user_id": userId,
+      "trip_id": tripId,
+      "match_id": matchId
+    }).tokenUri();
+    http.Response response = await http.get(uri);
+    if (response.statusCode == 200) {
+      return GetMatchResponse.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
+    }
+    throw API.getError(uri, response);
+  }
 }

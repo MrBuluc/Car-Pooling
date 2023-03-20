@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
 
-import '../../widgets/map_is_loading.dart';
 import '../const.dart';
 
 class TripDetailPage extends StatefulWidget {
@@ -66,7 +65,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
+            /*SizedBox(
               height: size.height * .46,
               child: OSMFlutter(
                 controller: mapController,
@@ -80,11 +79,11 @@ class _TripDetailPageState extends State<TripDetailPage> {
                 onMapIsReady: onMapIsReady,
                 mapIsLoading: const MapIsLoading(),
               ),
-            ),
-            /*Container(
-              height: size.height * .8,
-              color: Colors.red,
             ),*/
+            Container(
+              height: size.height * .46,
+              color: Colors.red,
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -138,7 +137,9 @@ class _TripDetailPageState extends State<TripDetailPage> {
                       goToPage(
                           context,
                           TripsRequestPage(
-                              requests: widget.getMatchResponse.requests));
+                            requests: widget.getMatchResponse.requests,
+                            tripId: trip.id!,
+                          ));
                     },
                   )
                 : Container(),

@@ -1,11 +1,18 @@
+import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/ui/const.dart';
+import 'package:car_pooling/ui/trips/trip_detail_page.dart';
+import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TripsRequestPage extends StatefulWidget {
   final List<Trip> requests;
-  const TripsRequestPage({Key? key, required this.requests}) : super(key: key);
+  final String tripId;
+  const TripsRequestPage(
+      {Key? key, required this.requests, required this.tripId})
+      : super(key: key);
 
   @override
   State<TripsRequestPage> createState() => _TripsRequestPageState();
@@ -52,7 +59,9 @@ class _TripsRequestPageState extends State<TripsRequestPage> {
                   ProgressElevatedButton(
                       isProgress: isProgress,
                       text: "Accept ride",
-                      onPressed: () {}),
+                      onPressed: () {
+                        acceptRide(trip.id!);
+                      }),
                   const SizedBox(
                     height: 8,
                   ),
@@ -65,5 +74,25 @@ class _TripsRequestPageState extends State<TripsRequestPage> {
             }),
       ),
     );
+  }
+
+  Future acceptRide(String matchId) async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      GetMatchResponse getMatchResponse =
+          await Provider.of<UserModel>(context, listen: false)
+              .acceptTrip(widget.tripId, matchId);
+
+      setState(() {
+        isProgress = false;
+      });
+
+      goToPage(context, TripDetailPage(getMatchResponse: getMatchResponse));
+    } catch (e) {
+      print("Hata: $e");
+    }
   }
 }
