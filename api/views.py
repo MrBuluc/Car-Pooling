@@ -181,6 +181,12 @@ def add_vehicle(body: str = Body()):
          vehicle_dict["id"], vehicle_dict)
 
 
+@app.post("/update-vehicle/{vehicle_id}")
+def update_vehicle(vehicle_id, body: str = Body()):
+    update(firestore.client().collection(
+        u'Vehicles'), vehicle_id, json.loads(body))
+
+
 def cancel_former_trips(trips_col_ref, user_id):
     trips = trips_col_ref.where(u'user_id', u'==', f'{user_id}').where(
         u'status', u'!=', Status.ended).stream()
@@ -190,8 +196,8 @@ def cancel_former_trips(trips_col_ref, user_id):
         update(trips_col_ref, trip.id, {u'status': Status.ended})
 
 
-def update(col_ref, id, update_fields):
-    col_ref.document(f'{id}').update(update_fields)
+def update(col_ref, doc_id, update_fields):
+    col_ref.document(f'{doc_id}').update(update_fields)
 
 
 def save(col_ref, doc_id, doc_dict):
