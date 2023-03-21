@@ -77,7 +77,7 @@ class _PoolPageState extends State<PoolPage> {
                           controller: mapController,
                           trackMyPosition: true,
                           maxZoomLevel: 18,
-                          minZoomLevel: 8,
+                          //minZoomLevel: 8,
                           initZoom: 5,
                           userLocationMarker: UserLocationMaker(
                               personMarker: userLocationMarker,

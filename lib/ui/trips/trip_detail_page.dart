@@ -24,7 +24,7 @@ class TripDetailPage extends StatefulWidget {
 }
 
 class _TripDetailPageState extends State<TripDetailPage> {
-  double west = 27.045, south = 35.93, east = 29.87, north = 37.928;
+  //double west = 27.045, south = 35.93, east = 29.87, north = 37.928;
 
   late Size size;
 
@@ -71,7 +71,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
                 controller: mapController,
                 trackMyPosition: trip.status! == Status.started,
                 maxZoomLevel: 18,
-                minZoomLevel: 8,
+                //minZoomLevel: 8,
                 initZoom: 13,
                 userLocationMarker: UserLocationMaker(
                     personMarker: userLocationMarker,
@@ -164,8 +164,8 @@ class _TripDetailPageState extends State<TripDetailPage> {
 
   Future<void> onMapIsReady(bool ready) async {
     if (ready) {
-      mapController.limitAreaMap(
-          BoundingBox(north: north, east: east, south: south, west: west));
+      /*mapController.limitAreaMap(
+          BoundingBox(north: north, east: east, south: south, west: west));*/
       GeoPoint destinationGeoPoint = GeoPoint(
           latitude: double.parse(trip.destinationLat!),
           longitude: double.parse(trip.destinationLon!));
