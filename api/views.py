@@ -8,6 +8,7 @@ from utils import match_routes
 from typing import List
 from google.cloud.firestore import GeoPoint, ArrayUnion, Query, ArrayRemove
 import json
+from uuid import uuid4
 
 app = FastAPI()
 
@@ -170,6 +171,14 @@ def create_review(body: str = Body()):
 @app.post("/update-user/{user_id}")
 def update_user(user_id, body: str = Body()):
     update(firestore.client().collection(u'Users'), user_id, json.loads(body))
+
+
+@app.put("/add-vehicle")
+def add_vehicle(body: str = Body()):
+    vehicle_dict = json.loads(body)
+    vehicle_dict["id"] = str(uuid4())
+    save(firestore.client().collection(u'Vehicles'),
+         vehicle_dict["id"], vehicle_dict)
 
 
 def cancel_former_trips(trips_col_ref, user_id):
