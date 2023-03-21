@@ -1,5 +1,6 @@
 import 'package:car_pooling/locator.dart';
 import 'package:car_pooling/models/trip.dart';
+import 'package:car_pooling/models/user.dart';
 import 'package:car_pooling/repository/user_repository.dart';
 import 'package:flutter/foundation.dart';
 
@@ -9,7 +10,7 @@ import '../models/nominatim_place.dart';
 
 class UserModel with ChangeNotifier {
   final UserRepository _userRepository = locator<UserRepository>();
-  String? userId, username;
+  User? user;
 
   Future<List<NominatimPlace>> getNominatimPlaces(String search, double west,
       double south, double east, double north) async {
@@ -33,9 +34,9 @@ class UserModel with ChangeNotifier {
 
   Future<PostMatchResponse> postMatch(Role role, Trip trip) async {
     try {
-      trip.userId = userId;
-      trip.driver = role == Role.driver ? username : null;
-      trip.username = role == Role.passenger ? username : null;
+      trip.userId = user!.id;
+      trip.driver = role == Role.driver ? user!.username : null;
+      trip.username = role == Role.passenger ? user!.username : null;
       return await _userRepository.postMatch(role, trip);
     } catch (e) {
       printError("postMatch", e);
@@ -45,7 +46,7 @@ class UserModel with ChangeNotifier {
 
   Future<GetMatchResponse> getMatch(String tripId, String matchId) async {
     try {
-      return await _userRepository.getMatch(userId!, tripId, matchId);
+      return await _userRepository.getMatch(user!.id!, tripId, matchId);
     } catch (e) {
       printError("getMatch", e);
       rethrow;
@@ -63,7 +64,7 @@ class UserModel with ChangeNotifier {
 
   Future<List<Trip>> getMyTrips() async {
     try {
-      return await _userRepository.getMyTrips(userId!);
+      return await _userRepository.getMyTrips(user!.id!);
     } catch (e) {
       printError("getMyTrips", e);
       rethrow;
@@ -72,7 +73,7 @@ class UserModel with ChangeNotifier {
 
   Future<GetMatchResponse> getTripDetail(String tripId) async {
     try {
-      return await _userRepository.getTripDetail(userId!, tripId);
+      return await _userRepository.getTripDetail(user!.id!, tripId);
     } catch (e) {
       printError("getTripDetail", e);
       rethrow;
@@ -81,9 +82,19 @@ class UserModel with ChangeNotifier {
 
   Future<GetMatchResponse> acceptTrip(String tripId, String matchId) async {
     try {
-      return await _userRepository.acceptTrip(userId!, tripId, matchId);
+      return await _userRepository.acceptTrip(user!.id!, tripId, matchId);
     } catch (e) {
       printError("acceptTrip", e);
+      rethrow;
+    }
+  }
+
+  Future<User?> getUser(String userId) async {
+    try {
+      user = await _userRepository.getUser(userId);
+      return user;
+    } catch (e) {
+      printError("getUser", e);
       rethrow;
     }
   }
