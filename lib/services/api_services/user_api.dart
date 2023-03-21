@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class UserApi {
   Future<User?> getUser(String userId) async {
-    Uri uri = API(port: 8000, path: "get-user/$userId").tokenUri();
+    Uri uri = API(path: "get-user/$userId").tokenUri();
     http.Response response = await http.get(uri);
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));

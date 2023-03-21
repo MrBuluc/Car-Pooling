@@ -18,7 +18,7 @@ class MatchApi {
         path += "driver";
         break;
     }
-    Uri uri = API(path: path, port: 8000).tokenUri();
+    Uri uri = API(path: path).tokenUri();
     http.Response response = await http.post(uri, body: jsonEncode(tripMap));
     if (response.statusCode == 200) {
       return PostMatchResponse.fromJson(
@@ -29,7 +29,7 @@ class MatchApi {
 
   Future<GetMatchResponse> getMatch(
       String userId, String tripId, String matchId) async {
-    Uri uri = API(port: 8000, path: "match", queryParameters: {
+    Uri uri = API(path: "match", queryParameters: {
       "user_id": userId,
       "trip_id": tripId,
       "match_id": matchId
@@ -44,7 +44,7 @@ class MatchApi {
 
   Future<GetMatchResponse> acceptTrip(
       String userId, String tripId, String matchId) async {
-    Uri uri = API(port: 8000, path: "accept-trip", queryParameters: {
+    Uri uri = API(path: "accept-trip", queryParameters: {
       "user_id": userId,
       "trip_id": tripId,
       "match_id": matchId

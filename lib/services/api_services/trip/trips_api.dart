@@ -16,7 +16,7 @@ class TripsApi {
   }
 
   Future<Map<String, dynamic>> getMyTripsMap(String userId) async {
-    Uri uri = API(port: 8000, path: "trips/$userId").tokenUri();
+    Uri uri = API(path: "trips/$userId").tokenUri();
     http.Response response = await http.get(uri);
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
@@ -25,7 +25,7 @@ class TripsApi {
   }
 
   Future<GetMatchResponse> getTripDetail(String userId, String tripId) async {
-    Uri uri = API(port: 8000, path: "trips/$userId/$tripId").tokenUri();
+    Uri uri = API(path: "trips/$userId/$tripId").tokenUri();
     http.Response response = await http.get(uri);
     if (response.statusCode == 200) {
       return GetMatchResponse.fromJson(
