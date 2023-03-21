@@ -1,4 +1,3 @@
-import 'package:car_pooling/models/user.dart';
 import 'package:car_pooling/ui/home_page/home_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
@@ -62,9 +61,7 @@ class _UsersPageState extends State<UsersPage> {
     });
 
     try {
-      User? user =
-          await Provider.of<UserModel>(context, listen: false).getUser(userId);
-      print(user);
+      Provider.of<UserModel>(context, listen: false).getUser(userId);
 
       setState(() {
         isProgress = false;

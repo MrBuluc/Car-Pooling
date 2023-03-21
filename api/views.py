@@ -147,6 +147,31 @@ def get_user(user_id):
     return filtered_user_dict
 
 
+@app.get("/get-vehicle")
+def get_vehicle(user_id):
+    pass
+
+
+@app.get("/profile/{user_id}")
+def get_profile(user_id):
+    pass
+
+
+@app.get("/reviews")
+def get_reviews(user_id):
+    pass
+
+
+@app.post("/create-review")
+def create_review(body: str = Body()):
+    pass
+
+
+@app.post("/update-user/{user_id}")
+def update_user(user_id, body: str = Body()):
+    update(firestore.client().collection(u'Users'), user_id, json.loads(body))
+
+
 def cancel_former_trips(trips_col_ref, user_id):
     trips = trips_col_ref.where(u'user_id', u'==', f'{user_id}').where(
         u'status', u'!=', Status.ended).stream()
