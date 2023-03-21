@@ -1,4 +1,5 @@
 import 'package:car_pooling/locator.dart';
+import 'package:car_pooling/models/review.dart';
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/models/user.dart';
 import 'package:car_pooling/repository/user_repository.dart';
@@ -95,6 +96,15 @@ class UserModel with ChangeNotifier {
       return user;
     } catch (e) {
       printError("getUser", e);
+      rethrow;
+    }
+  }
+
+  Future<bool> createReview(Review review) async {
+    try {
+      return await _userRepository.createReview(review);
+    } catch (e) {
+      printError("createReview", e);
       rethrow;
     }
   }
