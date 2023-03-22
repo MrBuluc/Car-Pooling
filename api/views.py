@@ -1,5 +1,5 @@
 # uvicorn views:app --reload
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, Response, status
 import firebase_admin
 from firebase_admin import credentials, firestore
 import uvicorn
@@ -135,17 +135,21 @@ def accept_trip(user_id, trip_id, match_id):
 
 
 @app.get("/get-user/{user_id}")
-def get_user(user_id):
+def get_user(user_id, response: Response):
     user_dict = get(firestore.client().collection(u'Users'), user_id)
-    filtered_user_dict = {
-        "id": user_dict[u'id'], "mail": user_dict[u'mail'], "name": user_dict[u'name']}
+    if user_dict:
+        filtered_user_dict = {
+            "id": user_dict[u'id'], "mail": user_dict[u'mail'], "name": user_dict[u'name']}
 
-    if u'profilePictureUrl' in user_dict:
-        filtered_user_dict["profilePictureUrl"] = user_dict[u'profilePictureUrl']
-    if u'surname' in user_dict:
-        filtered_user_dict["surname"] = user_dict[u'surname']
+        if u'profilePictureUrl' in user_dict:
+            filtered_user_dict["profilePictureUrl"] = user_dict[u'profilePictureUrl']
+        if u'surname' in user_dict:
+            filtered_user_dict["surname"] = user_dict[u'surname']
 
-    return filtered_user_dict
+        return filtered_user_dict
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"message": "User Not Found"}
 
 
 @app.get("/get-vehicle")
