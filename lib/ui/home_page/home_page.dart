@@ -1,5 +1,6 @@
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/ui/pool/pool_page.dart';
+import 'package:car_pooling/ui/profile/profile_page.dart';
 import 'package:car_pooling/ui/trips/my_trips_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
@@ -28,7 +29,13 @@ class _HomePageState extends State<HomePage> {
             text: "My Trips",
             onPressed: getMyTrips,
             circularProgressIndicatorColor: Colors.black,
-          )
+          ),
+          ProgressElevatedButton(
+              isProgress: isProgress,
+              text: "Profile",
+              onPressed: () {
+                goToPage(const ProfilePage());
+              })
         ],
       ),
       body: Center(

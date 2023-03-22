@@ -61,7 +61,7 @@ class _UsersPageState extends State<UsersPage> {
     });
 
     try {
-      Provider.of<UserModel>(context, listen: false).getUser(userId);
+      await Provider.of<UserModel>(context, listen: false).getUser(userId);
 
       setState(() {
         isProgress = false;
