@@ -1,10 +1,9 @@
 class Validator {
   static String? textControl(String? text, String label) {
-    text = text?.trim();
     RegExp regex = RegExp(
         "^[abcçdefgğhıijklmnoöprsştuüvyzqwxABCÇDEFGHIİJKLMNOÖPRSŞTUÜVYZQWX]+\$");
     if (!regex.hasMatch(text!)) {
-      return "$label numara veya boşluk içermemeli";
+      return "$label have to have not number or space";
     }
     return null;
   }

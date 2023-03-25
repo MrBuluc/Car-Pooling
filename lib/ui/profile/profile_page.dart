@@ -33,8 +33,8 @@ class _ProfilePageState extends State<ProfilePage> {
   String? profilePictureUrl;
 
   late List<TextEditingController> userInfoCntList, vehicleInfoCntList;
-  List<String> userInfoLabelTextList = ["Ad", "Soyad", "E-mail"],
-      vehicleInfoLabelTextList = ["Marka", "Model", "Renk", "Plaka"];
+  List<String> userInfoLabelTextList = ["Name", "Surname", "Mail"],
+      vehicleInfoLabelTextList = ["Brand", "Model", "Color", "Plate"];
   List<IconData> userInfoIconList = [
         Icons.perm_identity,
         Icons.perm_identity,
@@ -148,6 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List<Widget> buildForm(int mode) {
     List<Widget> children = [];
     late String buttonText;
+    late void Function() onPressed;
     if (mode == 0) {
       for (int i = 0; i < userInfoCntList.length; i++) {
         late Function validator;
@@ -162,6 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
             keyboardType: i == 2 ? TextInputType.emailAddress : null));
       }
       buttonText = "Contact";
+      onPressed = updateUser;
     } else {
       buttonText = "Vehicle";
       for (int i = 0; i < vehicleInfoCntList.length; i++) {
@@ -172,6 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Validator.emptyControl,
             mode));
       }
+      onPressed = updateUser;
     }
     children.add(Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -180,7 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: ProgressElevatedButton(
           isProgress: isProgress,
           text: "Save $buttonText Information",
-          onPressed: () {},
+          onPressed: onPressed,
         ),
       ),
     ));
@@ -219,8 +222,12 @@ class _ProfilePageState extends State<ProfilePage> {
           showSnackBar(context, "User info has been successfully updated");
         }
       } catch (e) {
-        print("Hata: $e");
+        print("Error: $e");
       }
+
+      setState(() {
+        isProgress = false;
+      });
     } else {
       showSnackBar(context, "Enter the valid values");
     }
