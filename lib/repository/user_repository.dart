@@ -2,10 +2,12 @@ import 'package:car_pooling/locator.dart';
 import 'package:car_pooling/models/nominatim_place.dart';
 import 'package:car_pooling/models/review.dart';
 import 'package:car_pooling/models/trip.dart';
+import 'package:car_pooling/models/vehicle.dart';
 import 'package:car_pooling/services/api_services/review_api.dart';
 import 'package:car_pooling/services/api_services/trip/end_trip_api.dart';
 import 'package:car_pooling/services/api_services/trip/match_api.dart';
 import 'package:car_pooling/services/api_services/user_api.dart';
+import 'package:car_pooling/services/api_services/vehicle_api.dart';
 
 import '../models/match/get_match_response.dart';
 import '../models/match/post_match_response.dart';
@@ -20,6 +22,7 @@ class UserRepository {
   final TripsApi _tripsApi = locator<TripsApi>();
   final UserApi _userApi = locator<UserApi>();
   final ReviewApi _reviewApi = locator<ReviewApi>();
+  final VehicleApi _vehicleApi = locator<VehicleApi>();
 
   Future<List<NominatimPlace>> getNominatimPlaces(String search, double west,
       double south, double east, double north) async {
@@ -67,5 +70,9 @@ class UserRepository {
 
   Future<bool> createReview(Review review) async {
     return await _reviewApi.createReview(review.toJson());
+  }
+
+  Future<bool> addVehicle(Vehicle vehicle) async {
+    return await _vehicleApi.addVehicle(vehicle.toJson());
   }
 }

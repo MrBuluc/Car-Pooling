@@ -48,6 +48,8 @@ class _ProfilePageState extends State<ProfilePage> {
         Icons.abc
       ];
 
+  late Vehicle? vehicle;
+
   @override
   void initState() {
     super.initState();
@@ -66,12 +68,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   currentVehicle() {
-    Vehicle? vehicle = widget.vehicle;
+    vehicle = widget.vehicle;
     if (vehicle != null) {
-      brandCnt.text = vehicle.brand!;
-      colorCnt.text = vehicle.color!;
-      modelCnt.text = vehicle.model!;
-      plateNoCnt.text = vehicle.plateNo!;
+      brandCnt.text = vehicle!.brand!;
+      colorCnt.text = vehicle!.color!;
+      modelCnt.text = vehicle!.model!;
+      plateNoCnt.text = vehicle!.plateNo!;
     }
   }
 
@@ -175,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Validator.emptyControl,
             mode));
       }
-      onPressed = updateUser;
+      onPressed = addOrUpdateVehicle;
     }
     children.add(Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -221,6 +223,40 @@ class _ProfilePageState extends State<ProfilePage> {
                 surname: surnameCnt.text));
         if (result) {
           showSnackBar(context, "User info has been successfully updated");
+        }
+      } catch (e) {
+        showSnackBar(context, e.toString(), error: true);
+      }
+
+      setState(() {
+        isProgress = false;
+      });
+    } else {
+      showSnackBar(context, "Enter the valid values", error: true);
+    }
+  }
+
+  addOrUpdateVehicle() {
+    if (vehicle == null) {
+      addVehicle();
+    }
+  }
+
+  Future addVehicle() async {
+    if (vehicleInfoFormKey.currentState!.validate()) {
+      setState(() {
+        isProgress = true;
+      });
+
+      try {
+        bool result = await Provider.of<UserModel>(context, listen: false)
+            .addVehicle(Vehicle(
+                brand: brandCnt.text,
+                color: colorCnt.text,
+                model: modelCnt.text,
+                plateNo: plateNoCnt.text));
+        if (result) {
+          showSnackBar(context, "Vehicle info has been successfully updated");
         }
       } catch (e) {
         showSnackBar(context, e.toString(), error: true);

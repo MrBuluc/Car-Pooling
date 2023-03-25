@@ -2,6 +2,7 @@ import 'package:car_pooling/locator.dart';
 import 'package:car_pooling/models/review.dart';
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/models/user.dart';
+import 'package:car_pooling/models/vehicle.dart';
 import 'package:car_pooling/repository/user_repository.dart';
 import 'package:flutter/foundation.dart';
 
@@ -114,6 +115,16 @@ class UserModel with ChangeNotifier {
       return await _userRepository.createReview(review);
     } catch (e) {
       printError("createReview", e);
+      rethrow;
+    }
+  }
+
+  Future<bool> addVehicle(Vehicle vehicle) async {
+    try {
+      vehicle.userId = user!.id!;
+      return await _userRepository.addVehicle(vehicle);
+    } catch (e) {
+      printError("addVehicle", e);
       rethrow;
     }
   }

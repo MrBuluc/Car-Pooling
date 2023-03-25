@@ -3,6 +3,7 @@ import 'package:car_pooling/services/api_services/review_api.dart';
 import 'package:car_pooling/services/api_services/trip/end_trip_api.dart';
 import 'package:car_pooling/services/api_services/trip/match_api.dart';
 import 'package:car_pooling/services/api_services/user_api.dart';
+import 'package:car_pooling/services/api_services/vehicle_api.dart';
 import 'package:get_it/get_it.dart';
 
 import 'services/api_services/nominatim_api.dart';
@@ -18,4 +19,5 @@ setupLocator() {
   locator.registerLazySingleton(() => TripsApi());
   locator.registerLazySingleton(() => UserApi());
   locator.registerLazySingleton(() => ReviewApi());
+  locator.registerLazySingleton(() => VehicleApi());
 }
