@@ -248,7 +248,7 @@ def get_username(id):
 
 def initializeFirebase():
     firebase_admin.initialize_app(credentials.Certificate(
-        ".\secrets\city-fiores-global-firebase-adminsdk-2i2ar-706d6148dd.json"))
+        ".\secrets\car-pooling-f0ddf-firebase-adminsdk-2xqeg-21a0254d83.json"))
 
 
 if __name__ == '__main__':

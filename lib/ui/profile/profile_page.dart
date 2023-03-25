@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   late List<TextEditingController> userInfoCntList, vehicleInfoCntList;
   List<String> userInfoLabelTextList = ["Ad", "Soyad", "E-mail"],
-      vehicleInfoLabelTextList = ["Marka", "Renk", "Model", "Plaka"];
+      vehicleInfoLabelTextList = ["Marka", "Model", "Renk", "Plaka"];
   List<IconData> userInfoIconList = [
         Icons.perm_identity,
         Icons.perm_identity,
@@ -41,8 +41,8 @@ class _ProfilePageState extends State<ProfilePage> {
       ],
       vehicleInfoIconList = [
         Icons.directions_car,
-        Icons.format_paint,
         Icons.directions_car_filled,
+        Icons.format_paint,
         Icons.abc
       ];
 
@@ -92,51 +92,52 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: Theme.of(context).primaryColor,
         body: Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: Container(
-            child: Column(
-              children: [
-                Expanded(
-                    flex: 1,
-                    child: ProfilePicture(
-                      imgUrl: profilePictureUrl ?? "assets/profile_picture.png",
-                      height: 80,
-                      width: 80,
-                    )),
-                Center(
-                  child: Container(
-                    margin:
-                        const EdgeInsets.only(left: 15, bottom: 15, top: 10),
-                    alignment: Alignment.centerLeft,
-                    child: const Text(
-                      "Contact Information",
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
+          child: Column(
+            children: [
+              Expanded(
+                  flex: 1,
+                  child: ProfilePicture(
+                    imgUrl: profilePictureUrl ?? "assets/profile_picture.png",
+                    height: 80,
+                    width: 80,
+                  )),
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(left: 15, bottom: 15, top: 10),
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    "Contact Information",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
                 ),
-                Expanded(
-                    flex: 4,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(40))),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Form(
-                              key: userInfoFormKey,
-                              child: Column(
-                                children: buildForm(0),
-                              ),
+              ),
+              Expanded(
+                  flex: 4,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(40),
+                            topRight: Radius.circular(40))),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Form(
+                            key: userInfoFormKey,
+                            child: Column(
+                              children: buildForm(0),
                             ),
-                          ],
-                        ),
+                          ),
+                          Form(
+                              key: vehicleInfoFormKey,
+                              child: Column(
+                                children: buildForm(1),
+                              ))
+                        ],
                       ),
-                    ))
-              ],
-            ),
+                    ),
+                  ))
+            ],
           ),
         ),
       ),
@@ -160,6 +161,16 @@ class _ProfilePageState extends State<ProfilePage> {
             keyboardType: i == 2 ? TextInputType.emailAddress : null));
       }
       buttonText = "Contact";
+    } else {
+      buttonText = "Vehicle";
+      for (int i = 0; i < vehicleInfoCntList.length; i++) {
+        children.add(buildTextFormField(
+            vehicleInfoCntList[i],
+            vehicleInfoLabelTextList[i],
+            vehicleInfoIconList[i],
+            Validator.emptyControl,
+            mode));
+      }
     }
     children.add(Padding(
       padding: const EdgeInsets.only(top: 10),
