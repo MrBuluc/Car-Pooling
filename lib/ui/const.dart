@@ -12,3 +12,8 @@ AppBar buildAppBar(String title) => AppBar(
       title: Text(title),
       centerTitle: true,
     );
+
+showSnackBar(BuildContext context, String content) {
+  ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(content), duration: const Duration(seconds: 2)));
+}

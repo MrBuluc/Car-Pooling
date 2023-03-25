@@ -61,6 +61,10 @@ class UserRepository {
     return await _userApi.getUser(userId);
   }
 
+  Future<bool> updateUser(String userId, User user) async {
+    return await _userApi.updateUser(userId, user.toJson());
+  }
+
   Future<bool> createReview(Review review) async {
     return await _reviewApi.createReview(review.toJson());
   }

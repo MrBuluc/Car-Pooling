@@ -100,6 +100,15 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  Future<bool> updateUser(User updateUser) async {
+    try {
+      return await _userRepository.updateUser(user!.id!, updateUser);
+    } catch (e) {
+      printError("updateUser", e);
+      rethrow;
+    }
+  }
+
   Future<bool> createReview(Review review) async {
     try {
       return await _userRepository.createReview(review);

@@ -1,6 +1,7 @@
 import 'package:car_pooling/models/user.dart';
 import 'package:car_pooling/models/vehicle.dart';
 import 'package:car_pooling/services/validator.dart';
+import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/profile_picture.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
@@ -201,4 +202,27 @@ class _ProfilePageState extends State<ProfilePage> {
               mode == 0 ? userInfoChanged = true : vehicleInfoChanged = true,
         ),
       );
+
+  Future updateUser() async {
+    if (userInfoFormKey.currentState!.validate()) {
+      setState(() {
+        isProgress = true;
+      });
+
+      try {
+        bool result = await Provider.of<UserModel>(context, listen: false)
+            .updateUser(User(
+                mail: mailCnt.text,
+                name: nameCnt.text,
+                surname: surnameCnt.text));
+        if (result) {
+          showSnackBar(context, "User info has been successfully updated");
+        }
+      } catch (e) {
+        print("Hata: $e");
+      }
+    } else {
+      showSnackBar(context, "Enter the valid values");
+    }
+  }
 }

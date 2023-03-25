@@ -13,4 +13,13 @@ class UserApi {
     }
     throw API.getError(uri, response);
   }
+
+  Future<bool> updateUser(String userId, Map<String, dynamic> userMap) async {
+    Uri uri = API(path: "update-user/$userId").tokenUri();
+    http.Response response = await http.post(uri, body: jsonEncode(userMap));
+    if (response.statusCode == 200) {
+      return true;
+    }
+    throw API.getError(uri, response);
+  }
 }
