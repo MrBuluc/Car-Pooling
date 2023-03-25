@@ -1,4 +1,5 @@
 import 'package:car_pooling/models/trip.dart';
+import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/ui/pool/pool_page.dart';
 import 'package:car_pooling/ui/profile/profile_page.dart';
 import 'package:car_pooling/ui/trips/my_trips_page.dart';
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             ElevatedButton(
               child: Text(
-                "Yolculuk Oluştur",
+                "Create a Trip",
                 style: textStyle,
               ),
               onPressed: () {
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ElevatedButton(
               child: Text(
-                "Yolculuk Ara",
+                "Search Trip",
                 style: textStyle,
               ),
               onPressed: () {
@@ -88,7 +89,11 @@ class _HomePageState extends State<HomePage> {
         isProgress = false;
       });
     } catch (e) {
-      print("Hata: $e");
+      showSnackBar(context, e.toString(), error: true);
     }
+
+    setState(() {
+      isProgress = false;
+    });
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/ui/home_page/home_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
@@ -71,7 +73,7 @@ class _UsersPageState extends State<UsersPage> {
         builder: (context) => const HomePage(),
       ));
     } catch (e) {
-      print("Hata: $e");
+      showSnackBar(context, e.toString(), error: true);
     }
   }
 }

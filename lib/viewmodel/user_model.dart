@@ -119,6 +119,6 @@ class UserModel with ChangeNotifier {
   }
 
   printError(String funcName, Object e) {
-    print("Usermodel $funcName hata: $e");
+    print("Usermodel $funcName Error: $e");
   }
 }

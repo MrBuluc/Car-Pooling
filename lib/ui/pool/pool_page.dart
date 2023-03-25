@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:car_pooling/models/match/post_match_response.dart';
 import 'package:car_pooling/models/nominatim_place.dart';
 import 'package:car_pooling/ui/const.dart';
@@ -152,7 +153,7 @@ class _PoolPageState extends State<PoolPage> {
           });
         }
       } catch (e) {
-        print("Hata: $e");
+        showSnackBar(context, e.toString(), error: true);
       }
     }
   }
@@ -224,7 +225,7 @@ class _PoolPageState extends State<PoolPage> {
             role: widget.role,
           ));
     } catch (e) {
-      print("Hata: $e");
+      showSnackBar(context, e.toString(), error: true);
     }
 
     findMatchState(() {

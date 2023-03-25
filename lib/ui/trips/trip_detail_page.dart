@@ -1,4 +1,5 @@
 // ignore_for_file: sort_child_properties_last
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
@@ -7,7 +8,6 @@ import 'package:car_pooling/ui/trips/matches_trips_page.dart';
 import 'package:car_pooling/ui/trips/trip_requests_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
@@ -222,7 +222,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
         Navigator.popUntil(context, (route) => count++ == 3);
       }
     } catch (e) {
-      print("Hata: $e");
+      showSnackBar(context, e.toString(), error: true);
       setState(() {
         isProgress = false;
       });

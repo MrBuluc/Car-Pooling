@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:car_pooling/models/user.dart';
 import 'package:car_pooling/models/vehicle.dart';
 import 'package:car_pooling/services/validator.dart';
@@ -222,14 +223,14 @@ class _ProfilePageState extends State<ProfilePage> {
           showSnackBar(context, "User info has been successfully updated");
         }
       } catch (e) {
-        print("Error: $e");
+        showSnackBar(context, e.toString(), error: true);
       }
 
       setState(() {
         isProgress = false;
       });
     } else {
-      showSnackBar(context, "Enter the valid values");
+      showSnackBar(context, "Enter the valid values", error: true);
     }
   }
 }

@@ -1,5 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/trip.dart';
+import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
@@ -125,7 +127,7 @@ class _MatchesTripsPageState extends State<MatchesTripsPage> {
             TripDetailPage(getMatchResponse: getMatchResponse),
       ));
     } catch (e) {
-      print("Hata: $e");
+      showSnackBar(context, e.toString(), error: true);
 
       setState(() {
         isProgress = false;
