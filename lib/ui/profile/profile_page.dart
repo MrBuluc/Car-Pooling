@@ -56,7 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
     currentUser();
     currentVehicle();
     userInfoCntList = [nameCnt, surnameCnt, mailCnt];
-    vehicleInfoCntList = [brandCnt, colorCnt, modelCnt, plateNoCnt];
+    vehicleInfoCntList = [brandCnt, modelCnt, colorCnt, plateNoCnt];
   }
 
   currentUser() {
@@ -236,25 +236,27 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  addOrUpdateVehicle() {
-    if (vehicle == null) {
-      addVehicle();
-    }
-  }
-
-  Future addVehicle() async {
+  Future addOrUpdateVehicle() async {
     if (vehicleInfoFormKey.currentState!.validate()) {
       setState(() {
         isProgress = true;
       });
 
       try {
-        bool result = await Provider.of<UserModel>(context, listen: false)
-            .addVehicle(Vehicle(
-                brand: brandCnt.text,
-                color: colorCnt.text,
-                model: modelCnt.text,
-                plateNo: plateNoCnt.text));
+        Vehicle newVehicle = Vehicle(
+            brand: brandCnt.text,
+            color: colorCnt.text,
+            model: modelCnt.text,
+            plateNo: plateNoCnt.text);
+        late bool result;
+        UserModel userModel = Provider.of<UserModel>(context, listen: false);
+        if (vehicle == null) {
+          result = await userModel.addVehicle(newVehicle);
+        } else {
+          newVehicle.id = vehicle!.id;
+          newVehicle.userId = vehicle!.userId;
+          result = await userModel.updateVehicle(newVehicle);
+        }
         if (result) {
           showSnackBar(context, "Vehicle info has been successfully updated");
         }

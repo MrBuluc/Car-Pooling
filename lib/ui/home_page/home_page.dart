@@ -1,12 +1,13 @@
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/ui/pool/pool_page.dart';
-import 'package:car_pooling/ui/profile/profile_page.dart';
 import 'package:car_pooling/ui/trips/my_trips_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../profile/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

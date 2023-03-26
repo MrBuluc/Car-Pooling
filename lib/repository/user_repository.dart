@@ -73,6 +73,10 @@ class UserRepository {
   }
 
   Future<bool> addVehicle(Vehicle vehicle) async {
-    return await _vehicleApi.addVehicle(vehicle.toJson());
+    return await _vehicleApi.add(vehicle.toJson());
+  }
+
+  Future<bool> updateVehicle(Vehicle vehicle) async {
+    return await _vehicleApi.update(vehicle.id!, vehicle.toJson());
   }
 }

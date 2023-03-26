@@ -129,6 +129,15 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  Future<bool> updateVehicle(Vehicle vehicle) async {
+    try {
+      return await _userRepository.updateVehicle(vehicle);
+    } catch (e) {
+      printError("updateVehicle", e);
+      rethrow;
+    }
+  }
+
   printError(String funcName, Object e) {
     print("Usermodel $funcName Error: $e");
   }
