@@ -4,16 +4,16 @@ class API {
   String? host;
   String path;
   Map<String, dynamic>? queryParameters;
-  bool local = true;
+  bool local;
 
-  API({this.host, required this.path, this.queryParameters});
+  API({this.host, required this.path, this.queryParameters, this.local = true});
 
   Uri tokenUri() {
     host ??= local ? "10.0.2.2" : host;
     return Uri(
         scheme: local ? "http" : "https",
         host: host,
-        port: 8000,
+        port: local ? 8000 : null,
         path: path,
         queryParameters: queryParameters);
   }

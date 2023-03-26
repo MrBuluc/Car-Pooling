@@ -19,14 +19,16 @@ class NominatimApi {
   Future<List> getNominatimPlaceList(String search, double west, double south,
       double east, double north) async {
     Uri uri = API(
-        host: "nominatim.openstreetmap.org",
-        path: "search",
-        queryParameters: {
-          "q": search,
-          "format": "json",
-          "bounded": "1",
-          "viewbox": "$west,$south,$east,$north"
-        }).tokenUri();
+            host: "nominatim.openstreetmap.org",
+            path: "search",
+            queryParameters: {
+              "q": search,
+              "format": "json",
+              "bounded": "1",
+              "viewbox": "$west,$south,$east,$north"
+            },
+            local: false)
+        .tokenUri();
     http.Response response = await http.get(uri);
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -36,13 +38,15 @@ class NominatimApi {
 
   Future<NominatimPlace> getStartNominatimPlace(double lat, double lon) async {
     Uri uri = API(
-        host: "nominatim.openstreetmap.org",
-        path: "reverse",
-        queryParameters: {
-          "format": "json",
-          "lat": lat.toString(),
-          "lon": lon.toString()
-        }).tokenUri();
+            host: "nominatim.openstreetmap.org",
+            path: "reverse",
+            queryParameters: {
+              "format": "json",
+              "lat": lat.toString(),
+              "lon": lon.toString()
+            },
+            local: false)
+        .tokenUri();
     http.Response response = await http.get(uri);
     if (response.statusCode == 200) {
       return NominatimPlace.fromJson(jsonDecode(response.body));

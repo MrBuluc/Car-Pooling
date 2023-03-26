@@ -4,13 +4,13 @@ import 'package:car_pooling/models/nominatim_place.dart';
 import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/ui/matches/matches_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
-import 'package:car_pooling/widgets/map_is_loading.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/trip.dart';
+import '../../widgets/map_is_loading.dart';
 
 class PoolPage extends StatefulWidget {
   final Role role;
@@ -66,7 +66,9 @@ class _PoolPageState extends State<PoolPage> {
                   controller: searchCnt,
                   decoration:
                       const InputDecoration(border: OutlineInputBorder()),
-                  onChanged: getNominatimPlaces,
+                  onChanged: (String search) {
+                    getNominatimPlaces(search, context);
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
@@ -95,6 +97,12 @@ class _PoolPageState extends State<PoolPage> {
                           mapIsLoading: const MapIsLoading(),
                         ),
                       ),
+                      /*SizedBox(
+                        height: size.height * .76,
+                        child: Container(
+                          color: Colors.red,
+                        ),
+                      ),*/
                       buildNominatimPlaceList.isNotEmpty
                           ? Container(
                               height: size.height * .283,
@@ -132,8 +140,8 @@ class _PoolPageState extends State<PoolPage> {
     );
   }
 
-  Future getNominatimPlaces(String search) async {
-    if (search.length > 2) {
+  Future getNominatimPlaces(String search, BuildContext context) async {
+    if (search.length > 3) {
       try {
         List<NominatimPlace> nominatimPlaces =
             await Provider.of<UserModel>(context, listen: false)

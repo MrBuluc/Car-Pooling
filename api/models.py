@@ -45,6 +45,7 @@ class Trip(object):
     def from_dict(source):
         trip = Trip()
         trip.id = str(uuid4())
+        trip.created_at = datetime.now(pytz.timezone("Asia/Istanbul"))
 
         if u'id' in source:
             trip.id = source[u'id']
