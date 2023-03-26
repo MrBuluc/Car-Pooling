@@ -101,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Expanded(
                   flex: 1,
                   child: ProfilePicture(
-                    imgUrl: profilePictureUrl ?? "assets/profile_picture.png",
+                    imgUrl: profilePictureUrl,
                     height: 80,
                     width: 80,
                   )),

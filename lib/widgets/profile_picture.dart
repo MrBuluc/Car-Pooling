@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ProfilePicture extends StatefulWidget {
-  final String imgUrl;
+  final String? imgUrl;
   final double width;
   final double height;
   const ProfilePicture(
@@ -18,16 +18,17 @@ class ProfilePicture extends StatefulWidget {
 class _ProfilePictureState extends State<ProfilePicture> {
   @override
   Widget build(BuildContext context) {
-    return widget.imgUrl.contains("assets")
+    return widget.imgUrl == null
         ? Container(
             height: widget.height,
             width: widget.width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage(widget.imgUrl), fit: BoxFit.cover)),
+                    image: AssetImage("assets/profile_picture.png"),
+                    fit: BoxFit.cover)),
           )
         : Image.network(
-            widget.imgUrl,
+            widget.imgUrl!,
             width: widget.width,
             height: widget.height,
             fit: BoxFit.cover,
