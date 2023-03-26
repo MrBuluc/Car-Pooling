@@ -68,14 +68,26 @@ class _MatchesPageState extends State<MatchesPage> {
                           const SizedBox(
                             height: 10,
                           ),
-                          ProgressElevatedButton(
-                              isProgress: isProgress,
-                              text: widget.role == Role.driver
-                                  ? "Offer ride"
-                                  : "Request ride",
-                              onPressed: () {
-                                offerOrRequestRide(matchedTrip.id!);
-                              }),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ProgressElevatedButton(
+                                  isProgress: isProgress,
+                                  text: widget.role == Role.driver
+                                      ? "Offer ride"
+                                      : "Request ride",
+                                  onPressed: () {
+                                    offerOrRequestRide(matchedTrip.id!);
+                                  }),
+                              ProgressElevatedButton(
+                                  isProgress: isProgress,
+                                  text: "View Profile",
+                                  onPressed: () {})
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           const Divider(
                             height: 1,
                             color: Colors.grey,
