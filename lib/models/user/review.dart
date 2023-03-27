@@ -1,3 +1,5 @@
+import 'package:car_pooling/ui/const.dart';
+
 class Review {
   String? id;
   String? review;
@@ -6,6 +8,7 @@ class Review {
   String? tripId;
   String? username;
   String? reviewerUsername;
+  DateTime? createdAt;
 
   Review(
       {this.id,
@@ -14,15 +17,15 @@ class Review {
       this.reviewerId,
       this.tripId,
       this.username,
-      this.reviewerUsername});
+      this.reviewerUsername,
+      this.createdAt});
 
   Review.fromJson(Map<String, dynamic> json)
       : this(
-            id: json["id"],
             review: json["review"],
-            username: json["username"],
             reviewerUsername: json["reviewer_username"],
-            tripId: json["trip_id"]);
+            createdAt: DateTime.parse(json["created_at"]),
+            userId: json["user_id"]);
 
   Map<String, dynamic> toJson() => {
         if (id != null) "id": id,
@@ -31,6 +34,9 @@ class Review {
         if (reviewerId != null) "reviewer_id": reviewerId,
         if (tripId != null) "trip_id": tripId
       };
+
+  String createdAtToString() =>
+      "${convertMonth(createdAt!.month)} ${createdAt!.year}";
 
   @override
   String toString() {

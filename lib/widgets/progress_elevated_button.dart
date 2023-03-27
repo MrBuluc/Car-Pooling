@@ -1,3 +1,4 @@
+import 'package:car_pooling/ui/const.dart';
 import 'package:flutter/material.dart';
 
 class ProgressElevatedButton extends StatefulWidget {
@@ -30,7 +31,7 @@ class _ProgressElevatedButtonState extends State<ProgressElevatedButton> {
             )
           : Text(
               widget.text,
-              style: const TextStyle(fontSize: 20),
+              style: textStyle,
             ),
       onPressed: () {
         if (!widget.isProgress) {
