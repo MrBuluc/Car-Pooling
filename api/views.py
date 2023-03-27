@@ -56,20 +56,24 @@ def trip_detail(user_id, trip_id):
     matches = []
     requests = []
     min_match_rate = 0.4
-    if trip.status == Status.started:
-        if trip.role == Role.driver:
-            trips = trips_col_ref.where(u'role', u'==', Role.passenger).where(
-                u'status', u'==', Status.pending).where(u'user_id', u'!=', f'{user_id}').stream()
-            for passenger_trip_id in trip.passengers:
-                matched.append(Trip.from_dict(
-                    get(trips_col_ref, passenger_trip_id)))
-        else:
-            trips = trips_col_ref.where(u'role', u'==', Role.driver).where(
-                u'status', u'!=', Status.ended).stream()
-            if trip.driver_trip_id:
-                matched.append(Trip.from_dict(
-                    get(trips_col_ref, trip.driver_trip_id)))
+    if trip.role == Role.driver:
+        trips = trips_col_ref.where(u'role', u'==', Role.passenger).where(
+            u'status', u'==', Status.pending).where(u'user_id', u'!=', f'{user_id}').stream()
+        for passenger_trip_id in trip.passengers:
+            passenger_trip = Trip.from_dict(
+                get(trips_col_ref, passenger_trip_id))
+            passenger_trip.username = get_username(passenger_trip.user_id)
+            matched.append(passenger_trip)
+    else:
+        trips = trips_col_ref.where(u'role', u'==', Role.driver).where(
+            u'status', u'!=', Status.ended).stream()
+        if trip.driver_trip_id:
+            driver_trip = Trip.from_dict(
+                get(trips_col_ref, trip.driver_trip_id))
+            driver_trip.username = get_username(driver_trip.user_id)
+            matched.append(driver_trip)
 
+    if trip.status != Status.ended:
         for mtrip_dict in trips:
             mtrip = Trip.from_dict(mtrip_dict.to_dict())
             if mtrip.user_id != user_id:
@@ -86,7 +90,9 @@ def trip_detail(user_id, trip_id):
                         matches.append(mtrip)
 
     for request_trip_id in trip.requests:
-        requests.append(Trip.from_dict(get(trips_col_ref, request_trip_id)))
+        request_trip = Trip.from_dict(get(trips_col_ref, request_trip_id))
+        request_trip.username = get_username(request_trip.user_id)
+        requests.append(request_trip)
 
     return {"trip": trip.to_dict(), "matched": matched, "matches": matches,
             "requests": requests}
