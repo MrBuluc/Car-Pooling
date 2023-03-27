@@ -1,6 +1,7 @@
 import 'package:car_pooling/models/user.dart';
 import 'package:car_pooling/models/vehicle.dart';
 import 'package:car_pooling/widgets/profile_picture.dart';
+import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
 
 class AccountPage extends StatefulWidget {
@@ -26,6 +27,8 @@ class _AccountPageState extends State<AccountPage> {
       fontSize: 18,
       fontWeight: FontWeight.bold);
 
+  bool isProgress = false;
+
   @override
   void initState() {
     super.initState();
@@ -40,7 +43,18 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(
-        children: [buildHeader()],
+        children: [
+          buildHeader(),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: ProgressElevatedButton(
+              isProgress: isProgress,
+              text: "Reviews",
+              backgroundColor: Colors.red,
+              onPressed: () {},
+            ),
+          )
+        ],
       ),
     );
   }
