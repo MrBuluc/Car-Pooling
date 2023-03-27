@@ -107,11 +107,23 @@ class _ProfilePageState extends State<ProfilePage> {
                   )),
               Center(
                 child: Container(
-                  margin: const EdgeInsets.only(left: 15, bottom: 15, top: 10),
+                  margin: const EdgeInsets.only(
+                      left: 15, bottom: 15, top: 10, right: 15),
                   alignment: Alignment.centerLeft,
-                  child: const Text(
-                    "Contact Information",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Contact Information",
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                      ProgressElevatedButton(
+                          isProgress: isProgress,
+                          text: "Reviews",
+                          backgroundColor: Colors.red,
+                          onPressed: () {})
+                    ],
                   ),
                 ),
               ),
