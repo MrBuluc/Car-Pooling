@@ -1,6 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:car_pooling/models/user.dart';
-import 'package:car_pooling/models/vehicle.dart';
 import 'package:car_pooling/services/validator.dart';
 import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
@@ -8,6 +6,9 @@ import 'package:car_pooling/widgets/profile_picture.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../models/user/user.dart';
+import '../../models/user/vehicle.dart';
 
 class ProfilePage extends StatefulWidget {
   final Vehicle? vehicle;

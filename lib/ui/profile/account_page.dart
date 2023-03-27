@@ -1,8 +1,9 @@
-import 'package:car_pooling/models/user.dart';
-import 'package:car_pooling/models/vehicle.dart';
 import 'package:car_pooling/widgets/profile_picture.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
+
+import '../../models/user/user.dart';
+import '../../models/user/vehicle.dart';
 
 class AccountPage extends StatefulWidget {
   final User user;

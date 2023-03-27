@@ -1,8 +1,7 @@
 import 'package:car_pooling/locator.dart';
 import 'package:car_pooling/models/nominatim_place.dart';
-import 'package:car_pooling/models/review.dart';
 import 'package:car_pooling/models/trip.dart';
-import 'package:car_pooling/models/vehicle.dart';
+import 'package:car_pooling/models/user/review.dart';
 import 'package:car_pooling/services/api_services/review_api.dart';
 import 'package:car_pooling/services/api_services/trip/end_trip_api.dart';
 import 'package:car_pooling/services/api_services/trip/match_api.dart';
@@ -11,7 +10,8 @@ import 'package:car_pooling/services/api_services/vehicle_api.dart';
 
 import '../models/match/get_match_response.dart';
 import '../models/match/post_match_response.dart';
-import '../models/user.dart';
+import '../models/user/user.dart';
+import '../models/user/vehicle.dart';
 import '../services/api_services/nominatim_api.dart';
 import '../services/api_services/trip/trips_api.dart';
 

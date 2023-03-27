@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:car_pooling/models/user.dart';
 import 'package:car_pooling/services/api_services/api.dart';
 import 'package:http/http.dart' as http;
+
+import '../../models/user/user.dart';
 
 class UserApi {
   Future<User?> getUser(String userId) async {

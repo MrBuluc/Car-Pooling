@@ -1,14 +1,14 @@
 import 'package:car_pooling/locator.dart';
-import 'package:car_pooling/models/review.dart';
 import 'package:car_pooling/models/trip.dart';
-import 'package:car_pooling/models/user.dart';
-import 'package:car_pooling/models/vehicle.dart';
+import 'package:car_pooling/models/user/review.dart';
 import 'package:car_pooling/repository/user_repository.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/match/get_match_response.dart';
 import '../models/match/post_match_response.dart';
 import '../models/nominatim_place.dart';
+import '../models/user/user.dart';
+import '../models/user/vehicle.dart';
 
 class UserModel with ChangeNotifier {
   final UserRepository _userRepository = locator<UserRepository>();
