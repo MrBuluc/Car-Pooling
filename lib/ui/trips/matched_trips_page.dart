@@ -1,4 +1,5 @@
 import 'package:car_pooling/models/trip.dart';
+import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
 
 import '../const.dart';
@@ -6,7 +7,12 @@ import '../const.dart';
 class MatchedTripsPage extends StatefulWidget {
   final Role role;
   final List<Trip> trips;
-  const MatchedTripsPage({Key? key, required this.role, required this.trips})
+  final Status tripStatus;
+  const MatchedTripsPage(
+      {Key? key,
+      required this.role,
+      required this.trips,
+      required this.tripStatus})
       : super(key: key);
 
   @override
@@ -16,6 +22,14 @@ class MatchedTripsPage extends StatefulWidget {
 class _MatchedTripsPageState extends State<MatchedTripsPage> {
   late List<Trip> trips;
 
+  late Size size;
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  TextEditingController reviewCnt = TextEditingController();
+
+  bool isProgress = false;
+
   @override
   void initState() {
     super.initState();
@@ -24,6 +38,8 @@ class _MatchedTripsPageState extends State<MatchedTripsPage> {
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
+
     return SafeArea(
         child: Scaffold(
       appBar: buildAppBar(
@@ -58,6 +74,17 @@ class _MatchedTripsPageState extends State<MatchedTripsPage> {
                     "Status: ${trip.status!.name}",
                     style: textStyle,
                   ),
+                  widget.tripStatus == Status.ended
+                      ? ElevatedButton(
+                          child: Text(
+                            "Leave Review",
+                            style: textStyle,
+                          ),
+                          onPressed: () {
+                            showReviewDialog();
+                          },
+                        )
+                      : Container(),
                   const SizedBox(
                     height: 10,
                   ),
@@ -71,4 +98,47 @@ class _MatchedTripsPageState extends State<MatchedTripsPage> {
       ),
     ));
   }
+
+  showReviewDialog() => showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+            title: const Align(
+              alignment: Alignment.topCenter,
+              child: Text("Leave Review"),
+            ),
+            children: [
+              Form(
+                key: formKey,
+                child: Container(
+                  margin: const EdgeInsets.all(10),
+                  width: size.width,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1, color: Theme.of(context).primaryColor)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: TextFormField(
+                      controller: reviewCnt,
+                      maxLines: 5,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: const InputDecoration(
+                          hintText: "We are looking forward to your review",
+                          hintStyle: TextStyle(fontSize: 18),
+                          border: InputBorder.none),
+                      style: textStyle,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: ProgressElevatedButton(
+                  isProgress: isProgress,
+                  text: "Give Review",
+                  backgroundColor: Colors.green,
+                  onPressed: () {},
+                ),
+              )
+            ],
+          ));
 }

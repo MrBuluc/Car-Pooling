@@ -98,15 +98,17 @@ class _TripDetailPageState extends State<TripDetailPage> {
               child: Text(
                 trip.role! == Role.driver
                     ? "Matched Passengers"
-                    : "Matched Drives",
+                    : "Matched Driver",
                 style: buttonTextStyle,
               ),
               onPressed: () {
                 goToPage(
                     context,
                     MatchedTripsPage(
-                        role: trip.role!,
-                        trips: widget.getMatchResponse.matched));
+                      role: trip.role!,
+                      trips: widget.getMatchResponse.matched,
+                      tripStatus: trip.status!,
+                    ));
               },
             ),
             trip.status! == Status.started || trip.status! == Status.pending
