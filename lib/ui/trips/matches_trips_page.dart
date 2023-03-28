@@ -4,6 +4,7 @@ import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
+import 'package:car_pooling/widgets/view_profile_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -75,14 +76,20 @@ class _MatchesTripsPageState extends State<MatchesTripsPage> {
                         style: textStyle,
                       ),
                       sizedBox,
-                      ProgressElevatedButton(
-                          isProgress: isProgress,
-                          text: widget.role == Role.passenger
-                              ? "Request ride"
-                              : "Offer ride",
-                          onPressed: () {
-                            requestOrOfferRide(trip.id!);
-                          }),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ProgressElevatedButton(
+                              isProgress: isProgress,
+                              text: widget.role == Role.passenger
+                                  ? "Request ride"
+                                  : "Offer ride",
+                              onPressed: () {
+                                requestOrOfferRide(trip.id!);
+                              }),
+                          ViewProfileButton(userId: trip.userId!)
+                        ],
+                      ),
                       sizedBox,
                       const Divider(
                         height: 1,
