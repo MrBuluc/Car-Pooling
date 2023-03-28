@@ -1,4 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:car_pooling/models/trip.dart';
+import 'package:car_pooling/models/user/vehicle.dart';
 import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/ui/pool/pool_page.dart';
 import 'package:car_pooling/ui/trips/my_trips_page.dart';
@@ -36,7 +38,7 @@ class _HomePageState extends State<HomePage> {
               isProgress: isProgress,
               text: "Profile",
               onPressed: () {
-                goToPage(const ProfilePage());
+                getVehicle();
               })
         ],
       ),
@@ -50,9 +52,11 @@ class _HomePageState extends State<HomePage> {
                 style: textStyle,
               ),
               onPressed: () {
-                goToPage(const PoolPage(
-                  role: Role.driver,
-                ));
+                goToPage(
+                    context,
+                    const PoolPage(
+                      role: Role.driver,
+                    ));
               },
             ),
             ElevatedButton(
@@ -61,19 +65,13 @@ class _HomePageState extends State<HomePage> {
                 style: textStyle,
               ),
               onPressed: () {
-                goToPage(const PoolPage(role: Role.passenger));
+                goToPage(context, const PoolPage(role: Role.passenger));
               },
             )
           ],
         ),
       ),
     );
-  }
-
-  goToPage(Widget page) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => page,
-    ));
   }
 
   Future getMyTrips() async {
@@ -84,7 +82,7 @@ class _HomePageState extends State<HomePage> {
     try {
       List<Trip> myTrips =
           await Provider.of<UserModel>(context, listen: false).getMyTrips();
-      goToPage(MyTripsPage(myTrips: myTrips));
+      goToPage(context, MyTripsPage(myTrips: myTrips));
 
       setState(() {
         isProgress = false;
@@ -96,5 +94,28 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isProgress = false;
     });
+  }
+
+  Future getVehicle() async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      Vehicle vehicle =
+          await Provider.of<UserModel>(context, listen: false).getVehicle();
+
+      setState(() {
+        isProgress = false;
+      });
+
+      goToPage(context, ProfilePage(vehicle: vehicle));
+    } catch (e) {
+      showSnackBar(context, e.toString(), error: true);
+
+      setState(() {
+        isProgress = false;
+      });
+    }
   }
 }

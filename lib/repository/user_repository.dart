@@ -79,4 +79,8 @@ class UserRepository {
   Future<bool> updateVehicle(Vehicle vehicle) async {
     return await _vehicleApi.update(vehicle.id!, vehicle.toJson());
   }
+
+  Future<Vehicle> getVehicle(String userId) async {
+    return await _vehicleApi.get(userId);
+  }
 }

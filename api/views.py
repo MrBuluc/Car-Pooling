@@ -160,7 +160,13 @@ def get_user(user_id, response: Response):
 
 @app.get("/get-vehicle")
 def get_vehicle(user_id):
-    pass
+    vehicles_stream = firestore.client().collection(
+        u'Vehicles').where(u"user_id", u"==", user_id).stream()
+    vehicle = {}
+    for vehicle_dict in vehicles_stream:
+        vehicle = vehicle_dict.to_dict()
+
+    return vehicle
 
 
 @app.get("/profile/{user_id}")

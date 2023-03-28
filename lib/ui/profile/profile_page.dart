@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
+import 'package:car_pooling/models/user/review.dart';
 import 'package:car_pooling/services/validator.dart';
 import 'package:car_pooling/ui/const.dart';
+import 'package:car_pooling/ui/profile/reviews_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/profile_picture.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
@@ -11,8 +13,8 @@ import '../../models/user/user.dart';
 import '../../models/user/vehicle.dart';
 
 class ProfilePage extends StatefulWidget {
-  final Vehicle? vehicle;
-  const ProfilePage({Key? key, this.vehicle}) : super(key: key);
+  final Vehicle vehicle;
+  const ProfilePage({Key? key, required this.vehicle}) : super(key: key);
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -49,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Icons.abc
       ];
 
-  late Vehicle? vehicle;
+  late Vehicle vehicle;
 
   @override
   void initState() {
@@ -70,11 +72,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   currentVehicle() {
     vehicle = widget.vehicle;
-    if (vehicle != null) {
-      brandCnt.text = vehicle!.brand!;
-      colorCnt.text = vehicle!.color!;
-      modelCnt.text = vehicle!.model!;
-      plateNoCnt.text = vehicle!.plateNo!;
+    if (vehicle.brand != null) {
+      brandCnt.text = vehicle.brand!;
+      colorCnt.text = vehicle.color!;
+      modelCnt.text = vehicle.model!;
+      plateNoCnt.text = vehicle.plateNo!;
     }
   }
 
@@ -263,11 +265,11 @@ class _ProfilePageState extends State<ProfilePage> {
             plateNo: plateNoCnt.text);
         late bool result;
         UserModel userModel = Provider.of<UserModel>(context, listen: false);
-        if (vehicle == null) {
+        if (vehicle.brand == null) {
           result = await userModel.addVehicle(newVehicle);
         } else {
-          newVehicle.id = vehicle!.id;
-          newVehicle.userId = vehicle!.userId;
+          newVehicle.id = vehicle.id;
+          newVehicle.userId = vehicle.userId;
           result = await userModel.updateVehicle(newVehicle);
         }
         if (result) {
