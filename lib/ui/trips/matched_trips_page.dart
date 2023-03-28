@@ -1,5 +1,6 @@
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
+import 'package:car_pooling/widgets/view_profile_button.dart';
 import 'package:flutter/material.dart';
 
 import '../const.dart';
@@ -74,6 +75,7 @@ class _MatchedTripsPageState extends State<MatchedTripsPage> {
                     "Status: ${trip.status!.name}",
                     style: textStyle,
                   ),
+                  ViewProfileButton(userId: trip.userId!),
                   widget.tripStatus == Status.ended
                       ? ElevatedButton(
                           child: Text(
