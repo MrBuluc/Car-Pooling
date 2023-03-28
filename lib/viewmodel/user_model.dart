@@ -110,6 +110,15 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  Future<List> getProfile(String userId) async {
+    try {
+      return await _userRepository.getProfile(userId);
+    } catch (e) {
+      printError("getProfile", e);
+      rethrow;
+    }
+  }
+
   Future<bool> createReview(Review review) async {
     try {
       return await _userRepository.createReview(review);

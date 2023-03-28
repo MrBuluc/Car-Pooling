@@ -2,6 +2,7 @@
 import 'package:car_pooling/models/match/get_match_response.dart';
 import 'package:car_pooling/models/match/post_match_response.dart';
 import 'package:car_pooling/ui/const.dart';
+import 'package:car_pooling/ui/profile/account_page.dart';
 import 'package:car_pooling/ui/trips/trip_detail_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
@@ -22,8 +23,6 @@ class MatchesPage extends StatefulWidget {
 
 class _MatchesPageState extends State<MatchesPage> {
   late PostMatchResponse matchResponse;
-
-  TextStyle textStyle = const TextStyle(fontSize: 20);
 
   bool isProgress = false;
 
@@ -82,16 +81,15 @@ class _MatchesPageState extends State<MatchesPage> {
                               ProgressElevatedButton(
                                   isProgress: isProgress,
                                   text: "View Profile",
-                                  onPressed: () {})
+                                  onPressed: () {
+                                    getProfile(matchedTrip.userId!);
+                                  })
                             ],
                           ),
                           const SizedBox(
                             height: 10,
                           ),
-                          const Divider(
-                            height: 1,
-                            color: Colors.grey,
-                          )
+                          divider
                         ],
                       );
                     },
@@ -141,6 +139,34 @@ class _MatchesPageState extends State<MatchesPage> {
       });
 
       goToPage(context, TripDetailPage(getMatchResponse: getMatchResponse));
+    } catch (e) {
+      showSnackBar(context, e.toString(), error: true);
+
+      setState(() {
+        isProgress = false;
+      });
+    }
+  }
+
+  Future getProfile(String userId) async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      List userAndVehicle = await Provider.of<UserModel>(context, listen: false)
+          .getProfile(userId);
+
+      setState(() {
+        isProgress = false;
+      });
+
+      goToPage(
+          context,
+          AccountPage(
+            user: userAndVehicle[0],
+            vehicle: userAndVehicle[1],
+          ));
     } catch (e) {
       showSnackBar(context, e.toString(), error: true);
 

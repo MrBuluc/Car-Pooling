@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:car_pooling/services/api_services/api.dart';
 import 'package:http/http.dart' as http;
 
-import '../../models/user/vehicle.dart';
+import '../../../models/user/vehicle.dart';
 
 class VehicleApi {
   Future<bool> add(Map<String, dynamic> vehicleMap) async {

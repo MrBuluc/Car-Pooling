@@ -57,6 +57,7 @@ class Trip {
     role = json["role"] != null ? convertStringToRole(json["role"]) : null;
     status =
         json["status"] != null ? convertStringToStatus(json["status"]) : null;
+    userId = json["user_id"];
   }
 
   Role convertStringToRole(String roleStr) {

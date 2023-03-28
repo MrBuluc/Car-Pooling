@@ -162,8 +162,8 @@ def get_vehicle(user_id):
 
 
 @app.get("/profile/{user_id}")
-def get_profile(user_id):
-    pass
+def get_profile(user_id, response: Response):
+    return {"user": get_user(user_id, response), "vehicle": get_vehicle(user_id)}
 
 
 @app.get("/reviews")
@@ -233,7 +233,7 @@ def find_matches(trips_col_ref, role: Role, route: List[GeoPoint]):
                             "destination": trip.destination,
                             "origin": trip.origin, "origin_lat": trip.origin_lat,
                             "origin_lon": trip.origin_lon,
-                            "match_rate": match_rate * 100})
+                            "match_rate": match_rate * 100, "user_id": trip.user_id})
     return matches
 
 
