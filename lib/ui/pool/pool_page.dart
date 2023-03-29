@@ -4,13 +4,13 @@ import 'package:car_pooling/models/nominatim_place.dart';
 import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/ui/matches/matches_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
+import 'package:car_pooling/widgets/map.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/trip.dart';
-import '../../widgets/map_is_loading.dart';
 
 class PoolPage extends StatefulWidget {
   final Role role;
@@ -30,14 +30,6 @@ class _PoolPageState extends State<PoolPage> {
   TextEditingController searchCnt = TextEditingController();
 
   MapController mapController = MapController();
-
-  MarkerIcon userLocationMarker = const MarkerIcon(
-    icon: Icon(
-      Icons.location_on,
-      color: Colors.blue,
-      size: 100,
-    ),
-  );
 
   late StateSetter findMatchState;
 
@@ -74,28 +66,12 @@ class _PoolPageState extends State<PoolPage> {
                   padding: const EdgeInsets.only(top: 10),
                   child: Stack(
                     children: [
-                      SizedBox(
+                      Map(
+                        mapController: mapController,
+                        onMapIsReady: onMapIsReady,
                         height: size.height * .76,
-                        child: OSMFlutter(
-                          controller: mapController,
-                          trackMyPosition: true,
-                          maxZoomLevel: 18,
-                          //minZoomLevel: 8,
-                          initZoom: 5,
-                          userLocationMarker: UserLocationMaker(
-                              personMarker: userLocationMarker,
-                              directionArrowMarker: userLocationMarker),
-                          androidHotReloadSupport: true,
-                          onMapIsReady: (ready) async {
-                            if (ready) {
-                              GeoPoint geoPoint =
-                                  await mapController.myLocation();
-                              trip.originLat = geoPoint.latitude;
-                              trip.originLon = geoPoint.longitude;
-                            }
-                          },
-                          mapIsLoading: const MapIsLoading(),
-                        ),
+                        trackMyPosition: true,
+                        initZoom: 5,
                       ),
                       /*SizedBox(
                         height: size.height * .76,
@@ -166,6 +142,14 @@ class _PoolPageState extends State<PoolPage> {
     }
   }
 
+  onMapIsReady(bool ready) async {
+    if (ready) {
+      GeoPoint geoPoint = await mapController.myLocation();
+      trip.originLat = geoPoint.latitude;
+      trip.originLon = geoPoint.longitude;
+    }
+  }
+
   List<Widget> buildNominatimPlace() {
     List<Widget> children = [];
     for (NominatimPlace nominatimPlace in buildNominatimPlaceList) {
@@ -201,7 +185,7 @@ class _PoolPageState extends State<PoolPage> {
         GeoPoint(
             latitude: double.parse(nominatimPlace.lat!),
             longitude: double.parse(nominatimPlace.lon!)),
-        roadOption: const RoadOption(roadColor: Colors.red, roadWidth: 10));
+        roadOption: roadOption);
     convertGeoPointToDoubleList(roadInfo.route);
     findMatchState(() {});
   }

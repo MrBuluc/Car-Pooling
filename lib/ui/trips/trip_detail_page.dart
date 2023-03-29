@@ -65,20 +65,12 @@ class _TripDetailPageState extends State<TripDetailPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            /*SizedBox(
+            /*Map(
+              mapController: mapController,
               height: size.height * .46,
-              child: OSMFlutter(
-                controller: mapController,
-                trackMyPosition: trip.status! == Status.started,
-                maxZoomLevel: 18,
-                //minZoomLevel: 8,
-                initZoom: 13,
-                userLocationMarker: UserLocationMaker(
-                    personMarker: userLocationMarker,
-                    directionArrowMarker: userLocationMarker),
-                onMapIsReady: onMapIsReady,
-                mapIsLoading: const MapIsLoading(),
-              ),
+              trackMyPosition: trip.status! == Status.started,
+              initZoom: 13,
+              onMapIsReady: onMapIsReady,
             ),*/
             Container(
               height: size.height * .46,
@@ -180,7 +172,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
             GeoPoint(latitude: trip.originLat!, longitude: trip.originLon!);
         mapController.changeLocation(originGeoPoint);
         mapController.drawRoad(originGeoPoint, destinationGeoPoint,
-            roadOption: const RoadOption(roadColor: Colors.red, roadWidth: 10));
+            roadOption: roadOption);
       }
     }
   }
