@@ -9,6 +9,8 @@ from typing import List
 from google.cloud.firestore import GeoPoint, ArrayUnion, Query, ArrayRemove
 import json
 from uuid import uuid4
+from datetime import datetime
+import pytz
 
 app = FastAPI()
 
@@ -104,6 +106,11 @@ def end_trip(trip_id):
            trip_id, {u'status': Status.ended})
 
 
+@app.post("/end-trip")
+def post_end_trip(body: str = Body()):
+    pass
+
+
 @app.get("/trips/{user_id}")
 def trips(user_id):
     trips_list = []
@@ -173,7 +180,16 @@ def get_reviews(user_id):
 
 @app.post("/create-review")
 def create_review(body: str = Body()):
-    pass
+    review_dict = json.loads(body)
+    review_dict["id"] = str(uuid4())
+    review_dict["created_at"] = datetime.now(pytz.timezone("Asia/Istanbul"))
+    client = firestore.client()
+    if "driver_trip_id" in review_dict:
+        review_dict["user_id"] = get(client.collection(
+            u"Trips"), review_dict["driver_trip_id"])["user_id"]
+        review_dict.pop("driver_trip_id")
+    save(client.collection(u"Reviews"),
+         review_dict["id"], review_dict)
 
 
 @app.post("/update-user/{user_id}")

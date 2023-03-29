@@ -26,11 +26,9 @@ class Review {
       : this(
             review: json["review"],
             reviewerUsername: json["reviewer_username"],
-            createdAt: DateTime.parse(json["created_at"]),
-            userId: json["user_id"]);
+            createdAt: DateTime.parse(json["created_at"]));
 
   Map<String, dynamic> toJson() => {
-        if (id != null) "id": id,
         if (review != null) "review": review,
         if (userId != null) "user_id": userId,
         if (reviewerId != null) "reviewer_id": reviewerId,

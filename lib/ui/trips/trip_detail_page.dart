@@ -101,6 +101,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
                       role: trip.role!,
                       trips: widget.getMatchResponse.matched,
                       tripStatus: trip.status!,
+                      tripId: trip.id!,
                     ));
               },
             ),
@@ -229,7 +230,8 @@ class _TripDetailPageState extends State<TripDetailPage> {
       showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => const ReviewDialog());
+          builder: (context) =>
+              ReviewDialog(driverTripId: trip.driverTripId!, tripId: trip.id!));
     }
   }
 }

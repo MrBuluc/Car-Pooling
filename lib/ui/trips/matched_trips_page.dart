@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:car_pooling/models/trip.dart';
 import 'package:car_pooling/widgets/review_dialog.dart';
 import 'package:car_pooling/widgets/view_profile_button.dart';
@@ -9,11 +10,13 @@ class MatchedTripsPage extends StatefulWidget {
   final Role role;
   final List<Trip> trips;
   final Status tripStatus;
+  final String tripId;
   const MatchedTripsPage(
       {Key? key,
       required this.role,
       required this.trips,
-      required this.tripStatus})
+      required this.tripStatus,
+      required this.tripId})
       : super(key: key);
 
   @override
@@ -85,7 +88,10 @@ class _MatchedTripsPageState extends State<MatchedTripsPage> {
                           onPressed: () {
                             showDialog(
                                 context: context,
-                                builder: (context) => const ReviewDialog());
+                                builder: (context) => ReviewDialog(
+                                      userId: trip.userId,
+                                      tripId: widget.tripId,
+                                    ));
                           },
                         )
                       : Container(),

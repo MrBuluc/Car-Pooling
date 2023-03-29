@@ -121,6 +121,7 @@ class UserModel with ChangeNotifier {
 
   Future<bool> createReview(Review review) async {
     try {
+      review.reviewerId = user!.id!;
       return await _userRepository.createReview(review);
     } catch (e) {
       printError("createReview", e);

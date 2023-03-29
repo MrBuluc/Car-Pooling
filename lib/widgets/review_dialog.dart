@@ -1,10 +1,20 @@
+// ignore_for_file: use_build_context_synchronously
+import 'package:car_pooling/models/user/review.dart';
+import 'package:car_pooling/services/validator.dart';
+import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../ui/const.dart';
 
 class ReviewDialog extends StatefulWidget {
-  const ReviewDialog({Key? key}) : super(key: key);
+  final String? userId;
+  final String? driverTripId;
+  final String tripId;
+  const ReviewDialog(
+      {Key? key, this.userId, this.driverTripId, required this.tripId})
+      : super(key: key);
 
   @override
   State<ReviewDialog> createState() => _ReviewDialogState();
@@ -48,6 +58,9 @@ class _ReviewDialogState extends State<ReviewDialog> {
                     hintStyle: TextStyle(fontSize: 18),
                     border: InputBorder.none),
                 style: textStyle,
+                validator: (String? value) {
+                  return Validator.emptyControl(value, "Must be a review");
+                },
               ),
             ),
           ),
@@ -68,12 +81,48 @@ class _ReviewDialogState extends State<ReviewDialog> {
                 isProgress: isProgress,
                 text: "Give Review",
                 backgroundColor: Colors.green,
-                onPressed: () {},
+                onPressed: () {
+                  giveReview();
+                },
               )
             ],
           ),
         )
       ],
     );
+  }
+
+  Future giveReview() async {
+    setState(() {
+      isProgress = true;
+    });
+
+    if (formKey.currentState!.validate()) {
+      try {
+        Review review = Review(review: reviewCnt.text, tripId: widget.tripId);
+        late bool result = false;
+        if (widget.driverTripId == null) {
+          // Driver gives review
+          review.userId = widget.userId!;
+          result = await Provider.of<UserModel>(context, listen: false)
+              .createReview(review);
+        }
+        if (result) {
+          Navigator.pop(context);
+
+          showSnackBar(context, "Successfully Reviwed 👍");
+        }
+      } catch (e) {
+        showSnackBar(context, e.toString(), error: true);
+
+        setState(() {
+          isProgress = false;
+        });
+      }
+    } else {
+      setState(() {
+        isProgress = false;
+      });
+    }
   }
 }
