@@ -130,8 +130,8 @@ class _MatchesTripsPageState extends State<MatchesTripsPage> {
       });
 
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            TripDetailPage(getMatchResponse: getMatchResponse),
+        builder: (context) => TripDetailPage(
+            getMatchResponse: getMatchResponse, popUntilMore: true),
       ));
     } catch (e) {
       showSnackBar(context, e.toString(), error: true);

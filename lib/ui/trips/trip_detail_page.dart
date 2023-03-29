@@ -17,7 +17,9 @@ import '../const.dart';
 
 class TripDetailPage extends StatefulWidget {
   final GetMatchResponse getMatchResponse;
-  const TripDetailPage({Key? key, required this.getMatchResponse})
+  final bool popUntilMore;
+  const TripDetailPage(
+      {Key? key, required this.getMatchResponse, required this.popUntilMore})
       : super(key: key);
 
   @override
@@ -217,8 +219,8 @@ class _TripDetailPageState extends State<TripDetailPage> {
         bool result = await Provider.of<UserModel>(context, listen: false)
             .endTrip(trip.id!);
         if (result) {
-          int count = 0;
-          Navigator.popUntil(context, (route) => count++ == 3);
+          int count = 0, popUntil = widget.popUntilMore ? 3 : 2;
+          Navigator.popUntil(context, (route) => count++ == popUntil);
         }
       } catch (e) {
         showSnackBar(context, e.toString(), error: true);

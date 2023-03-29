@@ -117,7 +117,10 @@ class _MyTripsPageState extends State<MyTripsPage> {
         isProgress = false;
       });
 
-      goToPage(context, TripDetailPage(getMatchResponse: getMatchResponse));
+      goToPage(
+          context,
+          TripDetailPage(
+              getMatchResponse: getMatchResponse, popUntilMore: false));
     } catch (e) {
       showSnackBar(context, e.toString(), error: true);
     }

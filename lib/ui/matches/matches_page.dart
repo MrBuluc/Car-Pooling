@@ -133,7 +133,10 @@ class _MatchesPageState extends State<MatchesPage> {
         isProgress = false;
       });
 
-      goToPage(context, TripDetailPage(getMatchResponse: getMatchResponse));
+      goToPage(
+          context,
+          TripDetailPage(
+              getMatchResponse: getMatchResponse, popUntilMore: true));
     } catch (e) {
       showSnackBar(context, e.toString(), error: true);
 
