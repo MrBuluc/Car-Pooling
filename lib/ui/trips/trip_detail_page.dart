@@ -8,6 +8,7 @@ import 'package:car_pooling/ui/trips/matches_trips_page.dart';
 import 'package:car_pooling/ui/trips/trip_requests_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
+import 'package:car_pooling/widgets/review_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
@@ -137,19 +138,21 @@ class _TripDetailPageState extends State<TripDetailPage> {
                     },
                   )
                 : Container(),
-            Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ProgressElevatedButton(
-                      isProgress: isProgress,
-                      text: "End Ride",
-                      backgroundColor: Colors.red,
-                      onPressed: endRide),
-                ],
-              ),
-            )
+            trip.status != Status.ended
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 10, bottom: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ProgressElevatedButton(
+                            isProgress: isProgress,
+                            text: "End Ride",
+                            backgroundColor: Colors.red,
+                            onPressed: endRide),
+                      ],
+                    ),
+                  )
+                : Container()
           ],
         ),
       ),
@@ -204,22 +207,29 @@ class _TripDetailPageState extends State<TripDetailPage> {
   }
 
   Future endRide() async {
-    setState(() {
-      isProgress = true;
-    });
-
-    try {
-      bool result = await Provider.of<UserModel>(context, listen: false)
-          .endTrip(trip.id!);
-      if (result) {
-        int count = 0;
-        Navigator.popUntil(context, (route) => count++ == 3);
-      }
-    } catch (e) {
-      showSnackBar(context, e.toString(), error: true);
+    if (trip.role == Role.driver) {
       setState(() {
-        isProgress = false;
+        isProgress = true;
       });
+
+      try {
+        bool result = await Provider.of<UserModel>(context, listen: false)
+            .endTrip(trip.id!);
+        if (result) {
+          int count = 0;
+          Navigator.popUntil(context, (route) => count++ == 3);
+        }
+      } catch (e) {
+        showSnackBar(context, e.toString(), error: true);
+        setState(() {
+          isProgress = false;
+        });
+      }
+    } else {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const ReviewDialog());
     }
   }
 }

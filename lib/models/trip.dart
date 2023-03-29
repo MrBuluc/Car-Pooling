@@ -20,6 +20,7 @@ class Trip {
   DateTime? createdAt;
   Role? role;
   Status? status;
+  String? driverTripId;
 
   Trip(
       {this.id,
@@ -58,6 +59,7 @@ class Trip {
     status =
         json["status"] != null ? convertStringToStatus(json["status"]) : null;
     userId = json["user_id"];
+    driverTripId = json["driver_trip_id"];
   }
 
   Role convertStringToRole(String roleStr) {
@@ -104,6 +106,6 @@ class Trip {
         'destinationLat: $destinationLat, destinationLon: $destinationLon, '
         'userId: $userId, username: $username, driver: $driver, '
         'matchRate: $matchRate, createdAt: $createdAt, role: $role, '
-        'status: $status}';
+        'status: $status, driverTripId: $driverTripId}';
   }
 }
