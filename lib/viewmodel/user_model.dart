@@ -139,6 +139,16 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  Future<List<Review>> getReviews({String userId = "0"}) async {
+    try {
+      return await _userRepository
+          .getReviews(userId == "0" ? user!.id! : userId);
+    } catch (e) {
+      printError("getReviews", e);
+      rethrow;
+    }
+  }
+
   Future<bool> addVehicle(Vehicle vehicle) async {
     try {
       vehicle.userId = user!.id!;

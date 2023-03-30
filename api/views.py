@@ -180,7 +180,16 @@ def get_profile(user_id, response: Response):
 
 @app.get("/reviews")
 def get_reviews(user_id):
-    pass
+    reviews_stream = firestore.client().collection(
+        u"Reviews").where(u"user_id", "==", user_id).stream()
+    reviews = []
+    for review_stream_dict in reviews_stream:
+        review_dict = review_stream_dict.to_dict()
+        reviews.append({"review": review_dict["review"], "reviewer_username": get_username(
+            review_dict["reviewer_id"]), "created_at": review_dict["created_at"],
+            "reviewer_id": review_dict["reviewer_id"]})
+
+    return reviews
 
 
 @app.post("/create-review")

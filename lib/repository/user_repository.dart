@@ -80,6 +80,10 @@ class UserRepository {
     return await _reviewApi.createReview(review.toJson());
   }
 
+  Future<List<Review>> getReviews(String userId) async {
+    return await _reviewApi.getReviews(userId);
+  }
+
   Future<bool> addVehicle(Vehicle vehicle) async {
     return await _vehicleApi.add(vehicle.toJson());
   }

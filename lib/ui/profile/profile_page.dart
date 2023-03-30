@@ -125,7 +125,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           isProgress: isProgress,
                           text: "Reviews",
                           backgroundColor: Colors.red,
-                          onPressed: () {})
+                          onPressed: () {
+                            getReviews();
+                          })
                     ],
                   ),
                 ),
@@ -161,6 +163,29 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+
+  Future getReviews() async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      List<Review> reviews =
+          await Provider.of<UserModel>(context, listen: false).getReviews();
+
+      setState(() {
+        isProgress = false;
+      });
+
+      goToPage(context, ReviewsPage(reviews: reviews));
+    } catch (e) {
+      showSnackBar(context, e.toString(), error: true);
+
+      setState(() {
+        isProgress = false;
+      });
+    }
   }
 
   List<Widget> buildForm(int mode) {
