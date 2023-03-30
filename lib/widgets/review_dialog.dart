@@ -12,8 +12,13 @@ class ReviewDialog extends StatefulWidget {
   final String? userId;
   final String? driverTripId;
   final String tripId;
+  final bool popUntilMore;
   const ReviewDialog(
-      {Key? key, this.userId, this.driverTripId, required this.tripId})
+      {Key? key,
+      this.userId,
+      this.driverTripId,
+      required this.tripId,
+      required this.popUntilMore})
       : super(key: key);
 
   @override
@@ -21,8 +26,6 @@ class ReviewDialog extends StatefulWidget {
 }
 
 class _ReviewDialogState extends State<ReviewDialog> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   late Size size;
 
   TextEditingController reviewCnt = TextEditingController();
@@ -39,29 +42,26 @@ class _ReviewDialogState extends State<ReviewDialog> {
         child: Text("Leave Review"),
       ),
       children: [
-        Form(
-          key: formKey,
-          child: Container(
-            margin: const EdgeInsets.all(10),
-            width: size.width,
-            decoration: BoxDecoration(
-                border: Border.all(
-                    width: 1, color: Theme.of(context).primaryColor)),
-            child: Padding(
-              padding: const EdgeInsets.all(5),
-              child: TextFormField(
-                controller: reviewCnt,
-                maxLines: 5,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: const InputDecoration(
-                    hintText: "We are looking forward to your review",
-                    hintStyle: TextStyle(fontSize: 18),
-                    border: InputBorder.none),
-                style: textStyle,
-                validator: (String? value) {
-                  return Validator.emptyControl(value, "Must be a review");
-                },
-              ),
+        Container(
+          margin: const EdgeInsets.all(10),
+          width: size.width,
+          decoration: BoxDecoration(
+              border:
+                  Border.all(width: 1, color: Theme.of(context).primaryColor)),
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: TextFormField(
+              controller: reviewCnt,
+              maxLines: 5,
+              textAlignVertical: TextAlignVertical.center,
+              decoration: const InputDecoration(
+                  hintText: "We are looking forward to your review",
+                  hintStyle: TextStyle(fontSize: 18),
+                  border: InputBorder.none),
+              style: textStyle,
+              validator: (String? value) {
+                return Validator.emptyControl(value, "Must be a review");
+              },
             ),
           ),
         ),
@@ -93,33 +93,46 @@ class _ReviewDialogState extends State<ReviewDialog> {
   }
 
   Future giveReview() async {
+    popUntil(bool result) {
+      if (result) {
+        int count = 0, popUntil = widget.popUntilMore ? 4 : 3;
+        Navigator.popUntil(context, (route) => count++ == popUntil);
+      }
+    }
+
     setState(() {
       isProgress = true;
     });
 
-    if (formKey.currentState!.validate()) {
-      try {
+    try {
+      UserModel userModel = Provider.of<UserModel>(context, listen: false);
+      if (reviewCnt.text.isNotEmpty) {
+        late bool result;
         Review review = Review(review: reviewCnt.text, tripId: widget.tripId);
-        late bool result = false;
         if (widget.driverTripId == null) {
           // Driver gives review
           review.userId = widget.userId!;
-          result = await Provider.of<UserModel>(context, listen: false)
-              .createReview(review);
-        }
-        if (result) {
-          Navigator.pop(context);
+          result = await userModel.createReview(review);
 
-          showSnackBar(context, "Successfully Reviwed 👍");
-        }
-      } catch (e) {
-        showSnackBar(context, e.toString(), error: true);
+          if (result) {
+            Navigator.pop(context);
 
-        setState(() {
-          isProgress = false;
-        });
+            showSnackBar(context, "Successfully Reviwed 👍");
+          }
+        } else {
+          // Passenger gives review
+          review.driverTripId = widget.driverTripId;
+          result = await userModel.postEndTrip(review);
+          popUntil(result);
+        }
+      } else {
+        bool result = await userModel.endTrip(widget.tripId);
+
+        popUntil(result);
       }
-    } else {
+    } catch (e) {
+      showSnackBar(context, e.toString(), error: true);
+
       setState(() {
         isProgress = false;
       });

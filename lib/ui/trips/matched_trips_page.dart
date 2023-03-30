@@ -89,9 +89,9 @@ class _MatchedTripsPageState extends State<MatchedTripsPage> {
                             showDialog(
                                 context: context,
                                 builder: (context) => ReviewDialog(
-                                      userId: trip.userId,
-                                      tripId: widget.tripId,
-                                    ));
+                                    userId: trip.userId,
+                                    tripId: widget.tripId,
+                                    popUntilMore: false));
                           },
                         )
                       : Container(),

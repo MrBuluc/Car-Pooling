@@ -47,6 +47,10 @@ class UserRepository {
     return await _endTripApi.endTrip(tripId);
   }
 
+  Future<bool> postEndTrip(Review review) async {
+    return await _endTripApi.postEndTrip(review.toJson());
+  }
+
   Future<List<Trip>> getMyTrips(String userId) async {
     return await _tripsApi.getMyTrips(userId);
   }

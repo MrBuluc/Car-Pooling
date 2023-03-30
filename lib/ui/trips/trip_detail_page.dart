@@ -210,7 +210,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
   }
 
   Future endRide() async {
-    if (trip.role == Role.driver) {
+    if (trip.role == Role.driver || trip.driverTripId == null) {
       setState(() {
         isProgress = true;
       });
@@ -232,8 +232,10 @@ class _TripDetailPageState extends State<TripDetailPage> {
       showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) =>
-              ReviewDialog(driverTripId: trip.driverTripId!, tripId: trip.id!));
+          builder: (context) => ReviewDialog(
+              driverTripId: trip.driverTripId!,
+              tripId: trip.id!,
+              popUntilMore: widget.popUntilMore));
     }
   }
 }

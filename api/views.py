@@ -72,8 +72,9 @@ def trip_detail(user_id, trip_id):
         if trip.driver_trip_id:
             driver_trip = Trip.from_dict(
                 get(trips_col_ref, trip.driver_trip_id))
-            driver_trip.username = get_username(driver_trip.user_id)
+            driver_trip.username = driver_trip.driver
             matched.append(driver_trip)
+            trip.driver = driver_trip.driver
 
     if trip.status != Status.ended:
         for mtrip_dict in trips:
@@ -108,21 +109,25 @@ def end_trip(trip_id):
 
 @app.post("/end-trip")
 def post_end_trip(body: str = Body()):
-    pass
+    create_review(body)
+    end_trip(json.loads(body)["trip_id"])
 
 
 @app.get("/trips/{user_id}")
 def trips(user_id):
     trips_list = []
-    trips_stream = firestore.client().collection(u'Trips').where(
-        u'user_id', u'==', f'{user_id}').order_by(u'created_at',
-                                                  direction=Query.DESCENDING)\
-        .stream()
+    trips_col_ref = firestore.client().collection(u'Trips')
+    trips_stream = trips_col_ref.where(u'user_id', u'==', f'{user_id}').order_by(
+        u'created_at', direction=Query.DESCENDING).stream()
     for trip_dict in trips_stream:
         trip = Trip.from_dict(trip_dict.to_dict())
+        if trip.role == Role.passenger and trip.driver_trip_id:
+            driver = get(trips_col_ref, trip.driver_trip_id)["driver"]
+        else:
+            driver = trip.driver
         trips_list.append({"id": trip.id, "destination": trip.destination,
                            "origin": trip.origin, "status": trip.status,
-                           "driver": trip.driver, "created_at": trip.created_at})
+                           "driver": driver, "created_at": trip.created_at})
     return {"trips": trips_list}
 
 

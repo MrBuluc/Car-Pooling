@@ -64,6 +64,16 @@ class UserModel with ChangeNotifier {
     }
   }
 
+  Future<bool> postEndTrip(Review review) async {
+    try {
+      review.reviewerId = user!.id;
+      return await _userRepository.postEndTrip(review);
+    } catch (e) {
+      printError("passengerEndTrip", e);
+      rethrow;
+    }
+  }
+
   Future<List<Trip>> getMyTrips() async {
     try {
       return await _userRepository.getMyTrips(user!.id!);
