@@ -7,6 +7,7 @@ import 'package:car_pooling/ui/trips/matched_trips_page.dart';
 import 'package:car_pooling/ui/trips/matches_trips_page.dart';
 import 'package:car_pooling/ui/trips/trip_requests_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
+import 'package:car_pooling/widgets/map_widget.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:car_pooling/widgets/review_dialog.dart';
 import 'package:flutter/material.dart';
@@ -68,17 +69,17 @@ class _TripDetailPageState extends State<TripDetailPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            /*Map(
+            MapWidget(
               mapController: mapController,
               height: size.height * .46,
               trackMyPosition: trip.status! == Status.started,
               initZoom: 13,
               onMapIsReady: onMapIsReady,
-            ),*/
-            Container(
+            ),
+            /*Container(
               height: size.height * .46,
               color: Colors.red,
-            ),
+            ),*/
             const SizedBox(
               height: 10,
             ),
@@ -170,6 +171,7 @@ class _TripDetailPageState extends State<TripDetailPage> {
           latitude: double.parse(trip.destinationLat!),
           longitude: double.parse(trip.destinationLon!));
       if (trip.status == Status.started) {
+        await Future.delayed(const Duration(seconds: 5));
         GeoPoint myLocationGeoPoint = await mapController.myLocation();
         mapController.drawRoad(myLocationGeoPoint, destinationGeoPoint,
             roadOption: const RoadOption(roadColor: Colors.red, roadWidth: 10));

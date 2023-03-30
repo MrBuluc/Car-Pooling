@@ -55,4 +55,7 @@ String convertMonth(int month) {
   }
 }
 
+String addZeroToLessThanTenMinutes(int minutes) =>
+    minutes < 10 ? "0$minutes" : minutes.toString();
+
 RoadOption roadOption = const RoadOption(roadColor: Colors.red, roadWidth: 10);

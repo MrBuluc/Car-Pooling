@@ -141,6 +141,13 @@ def accept_trip(user_id, trip_id, match_id):
         update(trips_col_ref, match_id, {
             u'passengers': ArrayUnion([f'{trip_id}'])})
     else:
+        match_trip = Trip.from_dict(get(trips_col_ref, match_id))
+        for passsenger_trip_id in trip.passengers:
+            passenger_trip = Trip.from_dict(
+                get(trips_col_ref, passsenger_trip_id))
+            if (match_trip.user_id == passenger_trip.user_id):
+                update(trips_col_ref, trip_id, {
+                       u"passengers": ArrayRemove([passsenger_trip_id])})
         update(trips_col_ref, trip_id, {
             u'passengers': ArrayUnion([f'{match_id}'])})
         update(trips_col_ref, match_id, {u'driver_trip_id': trip_id})
@@ -180,8 +187,8 @@ def get_profile(user_id, response: Response):
 
 @app.get("/reviews")
 def get_reviews(user_id):
-    reviews_stream = firestore.client().collection(
-        u"Reviews").where(u"user_id", "==", user_id).stream()
+    reviews_stream = firestore.client().collection(u"Reviews").where(u"user_id", "==", user_id)\
+        .order_by(u"created_at", direction=Query.DESCENDING).stream()
     reviews = []
     for review_stream_dict in reviews_stream:
         review_dict = review_stream_dict.to_dict()

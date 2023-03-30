@@ -3,13 +3,13 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 import 'map_is_loading.dart';
 
-class Map extends StatefulWidget {
+class MapWidget extends StatefulWidget {
   final MapController mapController;
   final Function(bool) onMapIsReady;
   final double height;
   final bool trackMyPosition;
   final double initZoom;
-  const Map(
+  const MapWidget(
       {Key? key,
       required this.mapController,
       required this.onMapIsReady,
@@ -19,10 +19,10 @@ class Map extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<Map> createState() => _MapState();
+  State<MapWidget> createState() => _MapWidgetState();
 }
 
-class _MapState extends State<Map> {
+class _MapWidgetState extends State<MapWidget> {
   MarkerIcon userLocationMarker = const MarkerIcon(
     icon: Icon(
       Icons.location_on,

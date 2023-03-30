@@ -95,7 +95,8 @@ class Trip {
 
   String createdAtToString() {
     return "${convertMonth(createdAt!.month)} ${createdAt!.day}, "
-        "${createdAt!.year}, ${createdAt!.hour}:${createdAt!.minute}";
+        "${createdAt!.year}, ${createdAt!.hour}:"
+        "${addZeroToLessThanTenMinutes(createdAt!.minute)}";
   }
 
   @override

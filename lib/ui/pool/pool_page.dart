@@ -4,7 +4,7 @@ import 'package:car_pooling/models/nominatim_place.dart';
 import 'package:car_pooling/ui/const.dart';
 import 'package:car_pooling/ui/matches/matches_page.dart';
 import 'package:car_pooling/viewmodel/user_model.dart';
-import 'package:car_pooling/widgets/map.dart';
+import 'package:car_pooling/widgets/map_widget.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -66,7 +66,7 @@ class _PoolPageState extends State<PoolPage> {
                   padding: const EdgeInsets.only(top: 10),
                   child: Stack(
                     children: [
-                      Map(
+                      MapWidget(
                         mapController: mapController,
                         onMapIsReady: onMapIsReady,
                         height: size.height * .76,
