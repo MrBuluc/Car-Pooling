@@ -1,7 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:car_pooling/models/user/review.dart';
 import 'package:car_pooling/ui/const.dart';
+import 'package:car_pooling/ui/profile/account_page.dart';
+import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ReviewsPage extends StatefulWidget {
   final List<Review> reviews;
@@ -45,7 +49,9 @@ class _ReviewsPageState extends State<ReviewsPage> {
                       ProgressElevatedButton(
                           isProgress: isProgress,
                           text: "By: ${review.reviewerUsername}",
-                          onPressed: () {}),
+                          onPressed: () {
+                            goToAccountPage(review.reviewerId!);
+                          }),
                       const SizedBox(
                         height: 5,
                       ),
@@ -64,5 +70,29 @@ class _ReviewsPageState extends State<ReviewsPage> {
         ),
       ),
     ));
+  }
+
+  Future goToAccountPage(String userId) async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      List userAndVehicle = await Provider.of<UserModel>(context, listen: false)
+          .getProfile(userId);
+
+      setState(() {
+        isProgress = false;
+      });
+
+      goToPage(context,
+          AccountPage(user: userAndVehicle[0], vehicle: userAndVehicle[1]));
+    } catch (e) {
+      showSnackBar(context, e.toString(), error: true);
+
+      setState(() {
+        isProgress = false;
+      });
+    }
   }
 }

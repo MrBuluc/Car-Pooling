@@ -13,8 +13,8 @@ import '../const.dart';
 
 class AccountPage extends StatefulWidget {
   final User user;
-  final Vehicle? vehicle;
-  const AccountPage({Key? key, required this.user, this.vehicle})
+  final Vehicle vehicle;
+  const AccountPage({Key? key, required this.user, required this.vehicle})
       : super(key: key);
 
   @override
