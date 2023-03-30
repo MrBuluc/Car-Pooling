@@ -1,9 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+import 'package:car_pooling/ui/profile/reviews_page.dart';
+import 'package:car_pooling/viewmodel/user_model.dart';
 import 'package:car_pooling/widgets/profile_picture.dart';
 import 'package:car_pooling/widgets/progress_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../models/user/review.dart';
 import '../../models/user/user.dart';
 import '../../models/user/vehicle.dart';
+import '../const.dart';
 
 class AccountPage extends StatefulWidget {
   final User user;
@@ -52,7 +58,9 @@ class _AccountPageState extends State<AccountPage> {
               isProgress: isProgress,
               text: "Reviews",
               backgroundColor: Colors.red,
-              onPressed: () {},
+              onPressed: () {
+                getReviews();
+              },
             ),
           )
         ],
@@ -143,4 +151,28 @@ class _AccountPageState extends State<AccountPage> {
       );
 
   String nullCheck(String? value) => value ?? "";
+
+  Future getReviews() async {
+    setState(() {
+      isProgress = true;
+    });
+
+    try {
+      List<Review> reviews =
+          await Provider.of<UserModel>(context, listen: false)
+              .getReviews(userId: user.id!);
+
+      setState(() {
+        isProgress = false;
+      });
+
+      goToPage(context, ReviewsPage(reviews: reviews));
+    } catch (e) {
+      showSnackBar(context, e.toString(), error: true);
+
+      setState(() {
+        isProgress = false;
+      });
+    }
+  }
 }
