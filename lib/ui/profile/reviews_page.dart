@@ -30,44 +30,41 @@ class _ReviewsPageState extends State<ReviewsPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: buildAppBar("Reviews"),
       body: Padding(
         padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-        child: Column(
-          children: [
-            ListView.builder(
-                itemCount: reviews.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  Review review = reviews[index];
-                  return Column(
-                    children: [
-                      Text(
-                        "Review: ${review.review}",
-                        style: textStyle,
-                      ),
-                      ProgressElevatedButton(
-                          isProgress: isProgress,
-                          text: "By: ${review.reviewerUsername}",
-                          onPressed: () {
-                            goToAccountPage(review.reviewerId!);
-                          }),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        review.createdAtToString(),
-                        style: textStyle,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      divider
-                    ],
-                  );
-                })
-          ],
-        ),
+        child: ListView.builder(
+            itemCount: reviews.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              Review review = reviews[index];
+              return Column(
+                children: [
+                  Text(
+                    "Review: ${review.review}",
+                    style: textStyle,
+                  ),
+                  ProgressElevatedButton(
+                      isProgress: isProgress,
+                      text: "By: ${review.reviewerUsername}",
+                      onPressed: () {
+                        goToAccountPage(review.reviewerId!);
+                      }),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    review.createdAtToString(),
+                    style: textStyle,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  divider
+                ],
+              );
+            }),
       ),
     ));
   }

@@ -36,7 +36,7 @@ class _UsersPageState extends State<UsersPage> {
                     }),
                 ProgressElevatedButton(
                     isProgress: isProgress,
-                    text: "Test",
+                    text: "Alex",
                     onPressed: () {
                       goToPage("G3mevApBThgNDz7Nq0EuuQhVMjz1");
                     })
@@ -47,7 +47,7 @@ class _UsersPageState extends State<UsersPage> {
             ),
             ProgressElevatedButton(
                 isProgress: isProgress,
-                text: "TestBir",
+                text: "Emily",
                 onPressed: () {
                   goToPage("EC2mQSpeZPckbi6GTvVaqMcaKmZ2");
                 })
