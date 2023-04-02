@@ -1,0 +1,6 @@
+pytz==2022.7.1
+google-cloud-firestore==2.7.0
+typing_extensions==4.5.0
+fastapi==0.92.0
+firebase-admin==5.4.0
+uvicorn==0.20.0
