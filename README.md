@@ -1,16 +1,35 @@
-# car_pooling
+# Car Pooling
 
-A new Flutter project.
+This is a carpooling application that allows users to share rides with others going to the same destination. The app is built using the Flutter framework for the mobile app and Python for the FastAPI backend, and it uses Firebase for data storage.
 
+
+## Prerequisites
+
+Before running the application, you need to have the following installed:
+
+- Flutter
+- Python
+- Firebase
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To get started, clone the repository and run the following command to install the required dependencies:
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+  pip install -r requirements.txt
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Then, start the API server by running the following command:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+  python views.py
+```
+
+After that, run the app using the Flutter CLI:
+
+```bash
+  flutter run
+```
+## Contributing
+
+Contributions to this project are always welcome! If you find a bug or would like to suggest a new feature, please open an issue or submit a pull request.
+
