@@ -121,16 +121,8 @@ class _PoolPageState extends State<PoolPage> {
       try {
         List<NominatimPlace> nominatimPlaces =
             await Provider.of<UserModel>(context, listen: false)
-                .getNominatimPlaces(search, west, south, east, north);
-        for (NominatimPlace nominatimPlace in nominatimPlaces) {
-          nominatimPlace.d = (await distance2point(
-                  GeoPoint(
-                      latitude: trip.originLat!, longitude: trip.originLon!),
-                  GeoPoint(
-                      latitude: double.parse(nominatimPlace.lat!),
-                      longitude: double.parse(nominatimPlace.lon!)))) /
-              1000;
-        }
+                .getNominatimPlaces(search, trip.originLat!.toString(),
+                    trip.originLon!.toString());
         if (nominatimPlaces.isNotEmpty) {
           setState(() {
             buildNominatimPlaceList = nominatimPlaces;
@@ -158,7 +150,7 @@ class _PoolPageState extends State<PoolPage> {
           leading: Column(
             children: [
               const Icon(Icons.location_on),
-              Text("${nominatimPlace.d!.toStringAsFixed(2)} km")
+              Text("${nominatimPlace.distance!.toStringAsFixed(2)} km")
             ],
           ),
           title: Text(nominatimPlace.displayName!),

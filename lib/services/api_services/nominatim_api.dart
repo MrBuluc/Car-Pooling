@@ -5,10 +5,10 @@ import 'package:car_pooling/services/api_services/api.dart';
 import 'package:http/http.dart' as http;
 
 class NominatimApi {
-  Future<List<NominatimPlace>> getNominatimPlaces(String search, double west,
-      double south, double east, double north) async {
+  Future<List<NominatimPlace>> getNominatimPlaces(
+      String search, String originLat, String originLon) async {
     List nominatimPlaceList =
-        await getNominatimPlaceList(search, west, south, east, north);
+        await getNominatimPlaceList(search, originLat, originLon);
     List<NominatimPlace> nominatimPlaces = [];
     for (Map<String, dynamic> json in nominatimPlaceList) {
       nominatimPlaces.add(NominatimPlace.fromJson(json));
@@ -16,22 +16,16 @@ class NominatimApi {
     return nominatimPlaces;
   }
 
-  Future<List> getNominatimPlaceList(String search, double west, double south,
-      double east, double north) async {
-    Uri uri = API(
-            host: "nominatim.openstreetmap.org",
-            path: "search",
-            queryParameters: {
-              "q": search,
-              "format": "json",
-              "bounded": "1",
-              "viewbox": "$west,$south,$east,$north"
-            },
-            local: false)
-        .tokenUri();
+  Future<List> getNominatimPlaceList(
+      String search, String originLat, String originLon) async {
+    Uri uri = API(path: "nominatim-search", queryParameters: {
+      "search": search,
+      "origin_lat": originLat,
+      "origin_lon": originLon
+    }).tokenUri();
     http.Response response = await http.get(uri);
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return jsonDecode(utf8.decode(response.bodyBytes));
     }
     throw API.getError(uri, response);
   }

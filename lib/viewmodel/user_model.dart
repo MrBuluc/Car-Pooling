@@ -14,11 +14,11 @@ class UserModel with ChangeNotifier {
   final UserRepository _userRepository = locator<UserRepository>();
   User? user;
 
-  Future<List<NominatimPlace>> getNominatimPlaces(String search, double west,
-      double south, double east, double north) async {
+  Future<List<NominatimPlace>> getNominatimPlaces(
+      String search, String originLat, String originLon) async {
     try {
       return await _userRepository.getNominatimPlaces(
-          search, west, south, east, north);
+          search, originLat, originLon);
     } catch (e) {
       printError("getNominatimPlaces", e);
       rethrow;

@@ -24,10 +24,9 @@ class UserRepository {
   final ReviewApi _reviewApi = locator<ReviewApi>();
   final VehicleApi _vehicleApi = locator<VehicleApi>();
 
-  Future<List<NominatimPlace>> getNominatimPlaces(String search, double west,
-      double south, double east, double north) async {
-    return await _nominatimApi.getNominatimPlaces(
-        search, west, south, east, north);
+  Future<List<NominatimPlace>> getNominatimPlaces(
+      String search, String originLat, String originLon) async {
+    return await _nominatimApi.getNominatimPlaces(search, originLat, originLon);
   }
 
   Future<NominatimPlace> getStartNominatimPlace(double lat, double lon) async {

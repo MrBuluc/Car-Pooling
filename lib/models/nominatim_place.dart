@@ -2,13 +2,16 @@ class NominatimPlace {
   String? lat;
   String? lon;
   String? displayName;
-  double? d;
+  double? distance;
 
-  NominatimPlace.fromJson(Map<String, dynamic> json) {
-    lat = json["lat"];
-    lon = json["lon"];
-    displayName = json["display_name"];
-  }
+  NominatimPlace({this.lat, this.lon, this.displayName, this.distance});
+
+  NominatimPlace.fromJson(Map<String, dynamic> json)
+      : this(
+            lat: json["lat"],
+            lon: json["lon"],
+            displayName: json["display_name"],
+            distance: json["distance"]);
 
   @override
   String toString() {

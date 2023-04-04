@@ -4,13 +4,14 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import uvicorn
 from models import Status, Trip, Role
-from utils import match_routes
+from utils import match_routes, haversine_distance
 from typing import List
 from google.cloud.firestore import GeoPoint, ArrayUnion, Query, ArrayRemove
 import json
 from uuid import uuid4
 from datetime import datetime
 import pytz
+import requests
 
 app = FastAPI()
 
@@ -232,6 +233,23 @@ def update_vehicle(vehicle_id, body: str = Body()):
         u'Vehicles'), vehicle_id, json.loads(body))
 
 
+@app.get("/nominatim-search")
+def get_nominatim_place_list(search, origin_lat, origin_lon):
+    west, south, east, north = 27.045, 35.93, 29.87, 37.928
+    nominatim_place_list = get_request("https://nominatim.openstreetmap.org/search", params={
+        "q": search, "format": "json", "bounded": "1",
+        "viewbox": f"{west},{south},{east},{north}"})
+    nominatim_place_list_filtered = []
+    for nominatim_place in nominatim_place_list:
+        lat2, long2 = nominatim_place["lat"], nominatim_place["lon"]
+        distance = haversine_distance(
+            float(origin_lat), float(origin_lon), float(lat2), float(long2))
+        nominatim_place_list_filtered.append({"lat": lat2, "lon": long2,
+                                              "display_name": nominatim_place["display_name"],
+                                              "distance": distance})
+    return nominatim_place_list_filtered
+
+
 def cancel_former_trips(trips_col_ref, user_id):
     trips = trips_col_ref.where(u'user_id', u'==', f'{user_id}').where(
         u'status', u'!=', Status.ended).stream()
@@ -285,6 +303,13 @@ def get_username(id):
     if u'surname' in user_dict:
         username += " " + user_dict[u'surname']
     return username
+
+
+def get_request(url, params: dict = {}):
+    response = requests.get(url, params)
+    if (response.status_code == 200):
+        return response.json()
+    return response.raise_for_status()
 
 
 def initializeFirebase():
